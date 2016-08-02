@@ -1,7 +1,6 @@
 ---
 layout :post
 category :lessons
-tagline : "linux kernel 4.6.2 升级导致导致的vmware启动失败问题"
 tags : [linux,kernel-4.6.2,vmware]
 ---
 {% include JB/setup %}
