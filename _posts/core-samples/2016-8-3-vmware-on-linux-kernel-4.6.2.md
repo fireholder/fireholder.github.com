@@ -1,10 +1,13 @@
 ---
-layout :post
-category :lessons
-tags : [linux,kernel-4.6.2,vmware]
+layout: post
+category : lessons
+tagline: "Supporting tagline"
+tags : [intro, beginner, jekyll, tutorial]
 ---
 {% include JB/setup %}
-于linux内核升级导致的VMware启动失败的问题，本人使用4.6.0-kali1-amd64,之前的内核版本为4.4,前一段时间升级kernel到4.6.2,导致vm启动失败，报错如下：
+
+
+关于linux内核升级导致的VMware启动失败的问题，本人使用4.6.0-kali1-amd64,之前的内核版本为4.4,前一段时间升级kernel到4.6.2,导致vm启动失败，报错如下：
 
 
 > (vmware-modconfig:26736): Gtk-WARNING **: 无法在模块路径中找到主题引擎：“adwaita”，
