@@ -1,18 +1,17 @@
 ---
 layout: post
 category : lessons
-tagline: "Supporting tagline"
-tags : [intro, beginner, jekyll, tutorial]
+tagline: "内核升级导致VM启动失败"
+tags : [VMware, linux, kernel, tutorial]
 ---
 {% include JB/setup %}
 
 
 关于linux内核升级导致的VMware启动失败的问题，本人使用4.6.0-kali1-amd64,之前的内核版本为4.4,前一段时间升级kernel到4.6.2,导致vm启动失败，报错如下：
 
-
-> (vmware-modconfig:26736): Gtk-WARNING **: 无法在模块路径中找到主题引擎：“adwaita”，
+>
+ (vmware-modconfig:26736): Gtk-WARNING **: 无法在模块路径中找到主题引擎：“adwaita”，
 /usr/share/themes/Adwaita/gtk-2.0/main.rc:728: error: unexpected identifier `direction', expected character `}'
-
 (vmware-modconfig:26736): Gtk-WARNING **: 无法在模块路径中找到主题引擎：“adwaita”，
 Gtk-Message: Failed to load module "canberra-gtk-module": libcanberra-gtk-module.so: 无法打开共享对象文件: 没有那个文件或目录
 Stopping VMware services:
@@ -113,7 +112,7 @@ Starting VMware services:
    VMware Authentication Daemon                                        done
 
 
-#### 后来找到方法如下，实际为打补丁，经测试有效：
+### 后来找到方法如下，实际为打补丁，经测试有效：
 
 1. cd /usr/lib/vmware/modules/source
 
@@ -136,4 +135,4 @@ tar -uf vmmon.tar vmmon-only
 重新编译内核模块
 
 
-###over
+## over
