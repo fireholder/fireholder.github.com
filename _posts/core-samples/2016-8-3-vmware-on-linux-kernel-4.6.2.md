@@ -1,6 +1,7 @@
-: post
+---
+layout :post
 category :lessons
-tagline: "linux kernel 4.6.2 升级导致导致的vmware启动失败问题"
+tagline : "linux kernel 4.6.2 升级导致导致的vmware启动失败问题"
 tags : [linux,kernel-4.6.2,vmware]
 ---
 {% include JB/setup %}
@@ -110,27 +111,27 @@ Starting VMware services:
    VMware Authentication Daemon                                        done
 
 
-#####后来找到方法如下，实际为打补丁，经测试有效：
+#### 后来找到方法如下，实际为打补丁，经测试有效：
 
-1.cd /usr/lib/vmware/modules/source
+1. cd /usr/lib/vmware/modules/source
 
-2.tar -xf vmnet.tar
+2. tar -xf vmnet.tar
  tar -xf vmmon.tar
 
-3.mv vmnet.tar vmnet.tar.bak
+3. mv vmnet.tar vmnet.tar.bak
 mv vmmon.tar vmmon.tar.bak
 备份
 
-4.vim ./vmmon-only/linux/hostif.c
+4. vim ./vmmon-only/linux/hostif.c
 vim ./vmnet-only/userif.c
 分别修改 get_user_pages 为 get_user_pages_remote
 
-5.tar -uf vmnet.tar vmnet-only
+5. tar -uf vmnet.tar vmnet-only
 tar -uf vmmon.tar vmmon-only
 打包修改过的文件
 
-6.vmware-modconfig --console --install-all 
+6. vmware-modconfig --console --install-all 
 重新编译内核模块
 
 
-#####over
+###over
