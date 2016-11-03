@@ -47,3 +47,8 @@ defaults:
       type: "posts"
     values:
       layout: "post"
+      author: "徐文婷"
+
+markdown: kramdown
+
+logo: /head.jpg
