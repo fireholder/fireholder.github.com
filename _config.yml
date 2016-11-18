@@ -13,7 +13,8 @@ stackoverflow: ""
 twitter: ""
 #disqus comment
 disqus:
-    shortname: "hello,fourier" #your disqus comment short name
+    shortname: "fireholder-github-io.disqus.com" #your disqus comment short name
+comments: true
 
 #google analytics
 google:
@@ -48,6 +49,7 @@ defaults:
     values:
       layout: "post"
       author: "徐文婷"
+      comments: true
 
 markdown: kramdown
 
