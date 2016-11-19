@@ -13,7 +13,7 @@ stackoverflow: ""
 twitter: ""
 #disqus comment
 disqus:
-    shortname: "fireholder-github-io.disqus.com" #your disqus comment short name
+    shortname: "fireholder-github-io" #your disqus comment short name
 comments: true
 
 #google analytics

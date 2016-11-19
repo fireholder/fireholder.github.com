@@ -1,0 +1,382 @@
+---
+title: "单片机扫盲篇"
+tags: [单片机]
+comments: true
+---
+
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="'zh'" xml:lang="'zh'">
+<head>
+<title>单片机扫盲篇</title>
+<!-- 2016-11-19 Sat 14:56 -->
+<meta  http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta  name="generator" content="Org-mode" />
+<meta  name="author" content="徐文婷" />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { color: green; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  pre.src-sh:before    { content: 'sh'; }
+  pre.src-bash:before  { content: 'sh'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-R:before     { content: 'R'; }
+  pre.src-perl:before  { content: 'Perl'; }
+  pre.src-java:before  { content: 'Java'; }
+  pre.src-sql:before   { content: 'SQL'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.right  { text-align: center;  }
+  th.left   { text-align: center;   }
+  th.center { text-align: center; }
+  td.right  { text-align: right;  }
+  td.left   { text-align: left;   }
+  td.center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara:nth-child(2) { display: inline; }
+  .footpara { display: block; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  /*]]>*/-->
+</style>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2013 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="content">
+<h1 class="title">单片机扫盲篇</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#sec-1">1. 概念</a></li>
+<li><a href="#sec-2">2. 组成</a>
+<ul>
+<li><a href="#sec-2-1">2.1. 存储空间</a>
+<ul>
+<li><a href="#sec-2-1-1">2.1.1. RAM：随机存储器</a></li>
+<li><a href="#sec-2-1-2">2.1.2. Flash/ROM：只读存储器</a></li>
+<li><a href="#sec-2-1-3">2.1.3. SFR:特殊功能寄存器(Sepecial Function Register)</a></li>
+</ul>
+</li>
+<li><a href="#sec-2-2">2.2. 中央处理器(CPU)</a>
+<ul>
+<li><a href="#sec-2-2-1">2.2.1. 作用：</a></li>
+<li><a href="#sec-2-2-2">2.2.2. 组成：</a></li>
+</ul>
+</li>
+<li><a href="#sec-2-3">2.3. 输入/输出引脚(I/O口)</a>
+<ul>
+<li><a href="#sec-2-3-1">2.3.1. 作用：</a></li>
+<li><a href="#sec-2-3-2">2.3.2. 原理：</a></li>
+</ul>
+</li>
+<li><a href="#sec-2-4">2.4. 外围设备</a></li>
+</ul>
+</li>
+<li><a href="#sec-3">3. 最小系统</a>
+<ul>
+<li><a href="#sec-3-1">3.1. 晶振电路</a>
+<ul>
+<li><a href="#sec-3-1-1">3.1.1. 构成：</a></li>
+<li><a href="#sec-3-1-2">3.1.2. 作用：</a></li>
+</ul>
+</li>
+<li><a href="#sec-3-2">3.2. 复位电路</a>
+<ul>
+<li><a href="#sec-3-2-1">3.2.1. 作用：</a></li>
+<li><a href="#sec-3-2-2">3.2.2. 原理：</a></li>
+</ul>
+</li>
+<li><a href="#sec-3-3">3.3. 电源电路：</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+说来惭愧，也算是接触单片机一年了，直到要开始讲课才发现自己对单片机的概念其实是含糊不清的。
+为了方便自己后面的学习以及讲课，这里对单片机的概念做一个简单明了的整理。
+</p>
+
+
+<div id="outline-container-sec-1" class="outline-2">
+<h2 id="sec-1"><span class="section-number-2">1</span> 概念</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+单片机又叫单片微控制器，即Microcontrollers。简单来说，就是一个把计算机系统集成到一个
+芯片上，相当于一个微型计算机。
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-2" class="outline-2">
+<h2 id="sec-2"><span class="section-number-2">2</span> 组成</h2>
+<div class="outline-text-2" id="text-2">
+</div><div id="outline-container-sec-2-1" class="outline-3">
+<h3 id="sec-2-1"><span class="section-number-3">2.1</span> 存储空间</h3>
+<div class="outline-text-3" id="text-2-1">
+</div><div id="outline-container-sec-2-1-1" class="outline-4">
+<h4 id="sec-2-1-1"><span class="section-number-4">2.1.1</span> RAM：随机存储器</h4>
+<div class="outline-text-4" id="text-2-1-1">
+</div><ol class="org-ol"><li><a id="sec-2-1-1-1" name="sec-2-1-1-1"></a>作用：内存，用于储存变量和中间阶段的结果<br  /></li>
+<li><a id="sec-2-1-1-2" name="sec-2-1-1-2"></a>特点：无限次擦写，存储读取快<br  /></li></ol>
+</div>
+<div id="outline-container-sec-2-1-2" class="outline-4">
+<h4 id="sec-2-1-2"><span class="section-number-4">2.1.2</span> Flash/ROM：只读存储器</h4>
+<div class="outline-text-4" id="text-2-1-2">
+</div><ol class="org-ol"><li><a id="sec-2-1-2-1" name="sec-2-1-2-1"></a>作用：<br  /><div class="outline-text-5" id="text-2-1-2-1">
+<p>
+硬盘，程序存储空间
+</p>
+</div>
+</li>
+<li><a id="sec-2-1-2-2" name="sec-2-1-2-2"></a>特点：<br  /><div class="outline-text-5" id="text-2-1-2-2">
+<p>
+有限次擦写，存储读取慢
+</p>
+</div>
+</li></ol>
+</div>
+<div id="outline-container-sec-2-1-3" class="outline-4">
+<h4 id="sec-2-1-3"><span class="section-number-4">2.1.3</span> SFR:特殊功能寄存器(Sepecial Function Register)</h4>
+<div class="outline-text-4" id="text-2-1-3">
+</div><ol class="org-ol"><li><a id="sec-2-1-3-1" name="sec-2-1-3-1"></a>作用：<br  /><div class="outline-text-5" id="text-2-1-3-1">
+<p>
+编程时通过控制寄存器来完成整个系统的运行（私以为对寄存器的读写的单片机编程区别于一般C语言的最大特点）
+</p>
+</div>
+</li>
+<li><a id="sec-2-1-3-2" name="sec-2-1-3-2"></a>原理：<br  /><div class="outline-text-5" id="text-2-1-3-2">
+<p>
+对寄存器的读写实际上是对寄存器地址的操作
+</p>
+</div>
+</li></ol>
+</div>
+</div>
+
+<div id="outline-container-sec-2-2" class="outline-3">
+<h3 id="sec-2-2"><span class="section-number-3">2.2</span> 中央处理器(CPU)</h3>
+<div class="outline-text-3" id="text-2-2">
+</div><div id="outline-container-sec-2-2-1" class="outline-4">
+<h4 id="sec-2-2-1"><span class="section-number-4">2.2.1</span> 作用：</h4>
+<div class="outline-text-4" id="text-2-2-1">
+<p>
+计算和处理发布指令
+</p>
+</div>
+</div>
+<div id="outline-container-sec-2-2-2" class="outline-4">
+<h4 id="sec-2-2-2"><span class="section-number-4">2.2.2</span> 组成：</h4>
+<div class="outline-text-4" id="text-2-2-2">
+<p>
+包括运算器和控制器
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-2-3" class="outline-3">
+<h3 id="sec-2-3"><span class="section-number-3">2.3</span> 输入/输出引脚(I/O口)</h3>
+<div class="outline-text-3" id="text-2-3">
+</div><div id="outline-container-sec-2-3-1" class="outline-4">
+<h4 id="sec-2-3-1"><span class="section-number-4">2.3.1</span> 作用：</h4>
+<div class="outline-text-4" id="text-2-3-1">
+<p>
+处理器通过控制I/O口的高低电平，即输入/输出状态，来读写数据，控制系统
+</p>
+</div>
+</div>
+<div id="outline-container-sec-2-3-2" class="outline-4">
+<h4 id="sec-2-3-2"><span class="section-number-4">2.3.2</span> 原理：</h4>
+<div class="outline-text-4" id="text-2-3-2">
+<p>
+单片机与外围设备的通信接口，通过传输协议来进行
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-2-4" class="outline-3">
+<h3 id="sec-2-4"><span class="section-number-3">2.4</span> 外围设备</h3>
+<div class="outline-text-3" id="text-2-4">
+<p>
+如定时器，时钟，通讯接口等
+</p>
+
+<p>
+<img src="/screenshots/1.png" />
+</p>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-sec-3" class="outline-2">
+<h2 id="sec-3"><span class="section-number-2">3</span> 最小系统</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+什么是单片机的最小系统？简单的说，就是能让单片机运行的最小电路
+</p>
+</div>
+<div id="outline-container-sec-3-1" class="outline-3">
+<h3 id="sec-3-1"><span class="section-number-3">3.1</span> 晶振电路</h3>
+<div class="outline-text-3" id="text-3-1">
+</div><div id="outline-container-sec-3-1-1" class="outline-4">
+<h4 id="sec-3-1-1"><span class="section-number-4">3.1.1</span> 构成：</h4>
+<div class="outline-text-4" id="text-3-1-1">
+<p>
+晶振直接接到单片机的晶振引脚，对地接两个10~30 pF 的电容（即负载电容）
+</p>
+</div>
+</div>
+<div id="outline-container-sec-3-1-2" class="outline-4">
+<h4 id="sec-3-1-2"><span class="section-number-4">3.1.2</span> 作用：</h4>
+<div class="outline-text-4" id="text-3-1-2">
+<p>
+晶振是执行程序的动力，CPU的心脏，提供单片机的主频率
+</p>
+</div>
+</div>
+</div>
+<div id="outline-container-sec-3-2" class="outline-3">
+<h3 id="sec-3-2"><span class="section-number-3">3.2</span> 复位电路</h3>
+<div class="outline-text-3" id="text-3-2">
+</div><div id="outline-container-sec-3-2-1" class="outline-4">
+<h4 id="sec-3-2-1"><span class="section-number-4">3.2.1</span> 作用：</h4>
+<div class="outline-text-4" id="text-3-2-1">
+<p>
+单片机内部所有寄存器初始化，避免单片机运行过程中的不稳定现象
+</p>
+</div>
+</div>
+<div id="outline-container-sec-3-2-2" class="outline-4">
+<h4 id="sec-3-2-2"><span class="section-number-4">3.2.2</span> 原理：</h4>
+<div class="outline-text-4" id="text-3-2-2">
+<p>
+电容的充放电
+</p>
+</div>
+</div>
+</div>
+<div id="outline-container-sec-3-3" class="outline-3">
+<h3 id="sec-3-3"><span class="section-number-3">3.3</span> 电源电路：</h3>
+<div class="outline-text-3" id="text-3-3">
+<p>
+供电
+</p>
+
+<p>
+<img src="../screenshots/2.png" /></p>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="author">Author: 徐文婷</p>
+<p class="date">Created: 2016-11-19 Sat 14:56</p>
+<p class="creator"><a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.2.10)</p>
+<p class="validation"><a href="http://validator.w3.org/check?uri=referer">Validate</a></p>
+</div>
+</body>
+</html>
