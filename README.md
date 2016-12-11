@@ -1,6 +1,6 @@
-###Hello
-##徐文婷的博客
-#This is XuWenting's blog
+### Hello
+## 徐文婷的博客
+# This is XuWenting's blog
 
 - using tempate of Autm-rb for jekyll
 
