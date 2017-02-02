@@ -1,0 +1,32 @@
+<h1 id="javascript-note-3">JavaScript NOTE 3</h1>
+<p>## JavaScript 事件处理
+### HTML事件处理程序</p>
+
+<pre><code class="language-JavaScript">&lt;a onclick="hide()"&gt;
+
+</code></pre>
+
+<h3 id="dom">DOM事件处理</h3>
+<p>DOM事件处理程序只能附加一个程序
+```JavaScript
+element.onevent=functionName;</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>### 事件监听器
+事件监听器可以同时触发多个函数。
+```JavaScript
+element.addEventListener('event',functionName [,Boolean]);
+
+</code></pre>
+</div>
+<p>其中最后一个参数是事件流，指定是否为捕获方式的事件相应，通常被设置为false。</p>
+
+<ul>
+  <li>解析器看到函数调用后面的小括号时会直接运行函数中的代码，而在事件处理程序中需要在事件出发时才运行，所以我们要用匿名函数传参。把方法调用封装在匿名函数里。</li>
+</ul>
+
+<h4 id="section">事件流</h4>
+<p>事件发生的顺序被称为“事件流”。
+* 事件冒泡
+事件从最具体的节点开始向外传播到最宽泛的节点。(默认)
+* 事件捕获
+事件从最宽泛的节点开始向内传播到最具体的节点。</p>

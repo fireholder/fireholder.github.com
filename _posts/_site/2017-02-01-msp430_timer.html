@@ -1,0 +1,23 @@
+<h2 id="section">时钟</h2>
+
+<p>关于时钟，我总是不是很清楚。51中一般是只有一个时钟源，而MSP430则有3个。主时钟为MCLK，辅助时钟为ACLK，子系统时钟为SMCLK。</p>
+
+<p>文字表达太艰涩，作图如下。</p>
+
+<p><img src="http://ogw6sutvr.bkt.clouddn.com/msp430_timer.png" alt="siweidaotu" /></p>
+
+<h2 id="ad">A/D</h2>
+<p>用到A/D的地方很多，那么A/D的原理到底是什么？模拟量又是如何转化为数字量？</p>
+
+<p>在MSP430中有16位模拟开关，其中8路为模拟信号，4路参考信号，1路内部温度传感器源，以及 AVcc-AVss/2 电压源输入。ADC内核将一个模拟量的输入转化成12为数字形式，结果保存在转换内存中。转换公式如下：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>N_ADC = 4095 * (V_in - V_R-) / (V_R+ - V_R1)
+</code></pre>
+</div>
+
+<ul>
+  <li>ADC12 中 12 指采样位数，即我们所说的精度。</li>
+</ul>
+
+<blockquote>
+</blockquote>

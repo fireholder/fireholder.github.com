@@ -1,0 +1,162 @@
+<h1 id="problem">Problem</h1>
+
+<blockquote>
+  <p>Given a string, find the length of the longest substring without repeating characters.</p>
+</blockquote>
+
+<blockquote>
+  <p>给定一个字符串，找到最长的没有重复的字符串。</p>
+</blockquote>
+
+<ul>
+  <li>Difficulty : Medium</li>
+</ul>
+
+<h1 id="examples">Examples:</h1>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>Given "abcabcbb", the answer is "abc", wich the length is 3.
+
+Given "bbbbb", the answer is "b", with the length of 1.
+
+Given "pwwkew", the answer is "wke", with the length of 3. Note that the answer must be a substring, "pwke" is a subsequence and not a substring.
+
+</code></pre>
+</div>
+
+<h1 id="expanation-1">Expanation 1</h1>
+<p>这几天都没有更新，真心不是在下太懒…是太蠢，这道题目我前前后后想了好几天，各种error，AC不过。最后无奈求助许奕大大，许奕大大大手一挥，过了。这是一个动态规划问题，之前在下采用蠢办法穷举所有的情况，主要存在的逻辑问题是没有考虑一个字符子串中包含另一段符合条件的子串。</p>
+
+<p>此处移植了一下许奕大大的代码。</p>
+
+<h2 id="solution-for-python">Solution for Python</h2>
+
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="k">class</span> <span class="nc">Solution</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">lengthOfLongestSubstring</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s</span><span class="p">):</span>
+        <span class="s">"""
+        :type s: str
+        :rtype: int
+        """</span>
+        <span class="n">length</span><span class="o">=</span><span class="mi">0</span>
+        <span class="n">left</span><span class="o">=</span><span class="mi">0</span>
+        <span class="n">begin</span><span class="o">=</span><span class="mi">0</span>
+        
+        <span class="c">#s=raw_input("input:")</span>
+        
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">val</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+            <span class="n">flag</span><span class="o">=</span><span class="bp">True</span>
+            <span class="k">for</span> <span class="n">j</span><span class="p">,</span><span class="n">val2</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="n">left</span><span class="p">:</span><span class="n">i</span><span class="p">]):</span>
+                <span class="k">if</span> <span class="n">val</span><span class="o">==</span><span class="n">val2</span><span class="p">:</span>
+                    <span class="n">left</span><span class="o">=</span><span class="n">left</span><span class="o">+</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span>
+                    <span class="n">flag</span><span class="o">=</span><span class="bp">False</span>
+                    <span class="k">break</span>
+        
+            <span class="k">if</span> <span class="n">flag</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">begin</span><span class="o">==</span><span class="n">left</span><span class="p">:</span>
+                    <span class="n">length</span><span class="o">+=</span><span class="mi">1</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">t</span><span class="o">=</span><span class="n">i</span><span class="o">-</span><span class="n">left</span><span class="o">+</span><span class="mi">1</span>
+                    <span class="k">if</span> <span class="n">t</span><span class="o">&gt;</span><span class="n">length</span><span class="p">:</span>
+                        <span class="n">begin</span><span class="o">=</span><span class="n">left</span>
+                        <span class="n">length</span><span class="o">=</span><span class="n">t</span>
+        
+        <span class="k">print</span> <span class="n">length</span>         
+
+      </code></pre></figure>
+
+<ul>
+  <li>运行时间：132ms</li>
+</ul>
+
+<h1 id="explanation-2">Explanation 2</h1>
+<p>许奕大大说动态规划的优势是不重复计算信息。</p>
+
+<p>假设Si为字符串S前i个字符组成的子串，Ti表示所求最长子串，Li表示Ti的长度，S[i]表示Si最后一个字符。在已知Ti的情况下，T(i+1)要么是Ti要么是以S[i+1]结尾的子串。假设Qi是以S[i+1]结尾的最长不重复子串，因为T1=Q0=S1,所以只要让i不断增加，把Qi的长度和Li做比较即可。</p>
+
+<p>此处遍历S，遍历Q(i-1)，如果找到与S[i]相同的字符，则将左边界右移到新找到的字符后，跳出循环。如果没有找到，并且上一次遍历也没找到，即T(i+1)=Qi，则让返回的长度加1,若上一次找到了，则要判断T(i+1)等于Ti还是Qi，比较Qi的长度和返回子串Ti的长度，让返回长度Li等于较大的那个，继续遍历。</p>
+
+<p>以下是许奕大大的cpp代码。</p>
+
+<h2 id="solution-for-cpp-10">Solution for cpp 1.0</h2>
+
+<figure class="highlight"><pre><code class="language-cpp" data-lang="cpp"><span class="k">class</span> <span class="nc">Solution</span> <span class="p">{</span>
+
+<span class="k">public</span><span class="o">:</span>
+
+    <span class="kt">int</span> <span class="n">lengthOfLongestSubstring</span><span class="p">(</span><span class="n">string</span> <span class="n">s</span><span class="p">)</span> <span class="p">{</span>
+
+		<span class="kt">size_t</span> <span class="n">beg</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">len</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">mid</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span>
+		<span class="n">set</span><span class="o">&lt;</span><span class="kt">char</span><span class="o">&gt;</span> <span class="n">cur</span><span class="p">;</span>
+		<span class="kt">bool</span> <span class="n">flag</span><span class="o">=</span><span class="nb">true</span><span class="p">;</span>
+		<span class="k">for</span><span class="p">(</span><span class="kt">size_t</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">j</span><span class="o">=</span><span class="n">s</span><span class="p">.</span><span class="n">size</span><span class="p">();</span><span class="n">i</span><span class="o">&lt;</span><span class="n">j</span><span class="p">;</span><span class="o">++</span><span class="n">i</span><span class="p">)</span> <span class="p">{</span>
+			<span class="kt">char</span> <span class="n">c</span><span class="o">=</span><span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+			<span class="k">for</span><span class="p">(</span><span class="kt">size_t</span> <span class="n">k</span><span class="o">=</span><span class="n">mid</span><span class="p">;</span><span class="n">k</span><span class="o">&lt;</span><span class="n">i</span><span class="p">;</span><span class="o">++</span><span class="n">k</span><span class="p">)</span> <span class="p">{</span>
+				<span class="k">if</span><span class="p">(</span><span class="n">c</span><span class="o">==</span><span class="n">s</span><span class="p">[</span><span class="n">k</span><span class="p">])</span>	<span class="p">{</span>
+					<span class="n">mid</span><span class="o">=++</span><span class="n">k</span><span class="p">;</span>
+					<span class="k">break</span><span class="p">;</span>
+				<span class="p">}</span>
+		<span class="p">}</span>
+		<span class="k">if</span><span class="p">(</span><span class="n">flag</span><span class="p">)</span> <span class="p">{</span>
+			<span class="k">if</span><span class="p">(</span><span class="n">cur</span><span class="p">.</span><span class="n">count</span><span class="p">(</span><span class="n">c</span><span class="p">)</span><span class="o">==</span><span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+				<span class="n">cur</span><span class="p">.</span><span class="n">insert</span><span class="p">(</span><span class="n">c</span><span class="p">);</span>
+				<span class="o">++</span><span class="n">len</span><span class="p">;</span>
+			<span class="p">}</span>
+			<span class="k">else</span> <span class="n">flag</span><span class="o">=</span><span class="nb">false</span><span class="p">;</span>
+		<span class="p">}</span>
+		<span class="k">else</span> <span class="p">{</span>
+			<span class="kt">int</span> <span class="n">t</span><span class="o">=</span><span class="n">i</span><span class="o">-</span><span class="n">mid</span><span class="o">+</span><span class="mi">1</span><span class="p">;</span>
+			<span class="k">if</span><span class="p">(</span><span class="n">len</span><span class="o">&lt;</span><span class="n">t</span><span class="p">)</span> <span class="p">{</span>
+				<span class="n">beg</span><span class="o">=</span><span class="n">mid</span><span class="p">;</span>
+				<span class="n">len</span><span class="o">=</span><span class="n">t</span><span class="p">;</span>
+				<span class="n">flag</span><span class="o">=</span><span class="nb">true</span><span class="p">;</span>
+				<span class="n">cur</span><span class="p">.</span><span class="n">clear</span><span class="p">();</span>
+				<span class="k">for</span><span class="p">(</span><span class="kt">size_t</span> <span class="n">k</span><span class="o">=</span><span class="n">mid</span><span class="p">;</span><span class="n">k</span><span class="o">&lt;=</span><span class="n">i</span><span class="p">;</span><span class="o">++</span><span class="n">k</span><span class="p">)</span> <span class="n">cur</span><span class="p">.</span><span class="n">insert</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="n">k</span><span class="p">]);</span>
+				<span class="p">}</span>
+			<span class="p">}</span>
+		<span class="p">}</span>
+		<span class="k">return</span> <span class="n">s</span><span class="p">.</span><span class="n">substr</span><span class="p">(</span><span class="n">beg</span><span class="p">,</span><span class="n">len</span><span class="p">).</span><span class="n">length</span><span class="p">();</span>
+    <span class="p">}</span>
+<span class="p">};</span></code></pre></figure>
+
+<ul>
+  <li>运行时间：26ms</li>
+</ul>
+
+<h2 id="solution-for-cpp-20">Solution for cpp 2.0</h2>
+
+<figure class="highlight"><pre><code class="language-cpp" data-lang="cpp"><span class="k">class</span> <span class="nc">Solution</span> <span class="p">{</span>
+
+<span class="k">public</span><span class="o">:</span>
+
+    <span class="kt">int</span> <span class="n">lengthOfLongestSubstring</span><span class="p">(</span><span class="n">string</span> <span class="n">s</span><span class="p">)</span> <span class="p">{</span>
+
+	<span class="kt">size_t</span> <span class="n">beg</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">len</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">mid</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span>
+		<span class="k">for</span> <span class="p">(</span><span class="kt">size_t</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">j</span><span class="o">=</span><span class="n">s</span><span class="p">.</span><span class="n">size</span><span class="p">();</span><span class="n">i</span><span class="o">&lt;</span><span class="n">j</span><span class="p">;</span><span class="o">++</span><span class="n">i</span><span class="p">){</span>
+			<span class="kt">char</span> <span class="n">c</span><span class="o">=</span><span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+			<span class="kt">bool</span> <span class="n">flag</span> <span class="o">=</span><span class="nb">true</span><span class="p">;</span>
+			<span class="k">for</span><span class="p">(</span><span class="kt">size_t</span> <span class="n">k</span><span class="o">=</span><span class="n">mid</span><span class="p">;</span><span class="n">k</span><span class="o">&lt;</span><span class="n">i</span><span class="p">;</span><span class="o">++</span><span class="n">k</span><span class="p">){</span>
+				<span class="k">if</span><span class="p">(</span><span class="n">c</span><span class="o">==</span><span class="n">s</span><span class="p">[</span><span class="n">k</span><span class="p">]){</span>
+					<span class="n">mid</span><span class="o">=++</span><span class="n">k</span><span class="p">;</span>
+					<span class="n">flag</span><span class="o">=</span><span class="nb">false</span><span class="p">;</span>
+					<span class="k">break</span><span class="p">;</span>
+				<span class="p">}</span>
+			<span class="p">}</span>
+			<span class="k">if</span><span class="p">(</span><span class="n">flag</span><span class="p">)</span>
+				<span class="k">if</span><span class="p">(</span><span class="n">beg</span><span class="o">==</span><span class="n">mid</span><span class="p">)</span>
+					<span class="o">++</span><span class="n">len</span><span class="p">;</span>
+				<span class="k">else</span><span class="p">{</span>
+					<span class="kt">size_t</span> <span class="n">t</span><span class="o">=</span><span class="n">i</span><span class="o">-</span><span class="n">mid</span><span class="o">+</span><span class="mi">1</span><span class="p">;</span>
+					<span class="k">if</span><span class="p">(</span><span class="n">len</span><span class="o">&lt;</span><span class="n">t</span><span class="p">){</span>
+						<span class="n">beg</span><span class="o">=</span><span class="n">mid</span><span class="p">;</span>
+						<span class="n">len</span><span class="o">=</span><span class="n">t</span><span class="p">;</span>
+					<span class="p">}</span>
+				<span class="p">}</span>
+			<span class="p">}</span>
+		<span class="p">}</span>
+	<span class="k">return</span> <span class="n">len</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="p">};</span>
+	</code></pre></figure>
+
+<ul>
+  <li>运行时间：23ms</li>
+</ul>

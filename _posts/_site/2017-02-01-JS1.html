@@ -1,0 +1,64 @@
+<h2 id="iife">关于匿名函数和<strong>IIFE</strong></h2>
+
+<ol>
+  <li><strong>匿名函数</strong> 各种面向对象语言应该都有，函数定义形式如下：</li>
+</ol>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">fun</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">args</span><span class="p">)</span> <span class="p">{</span>
+  <span class="p">...</span>
+<span class="p">};</span></code></pre></figure>
+
+<ol>
+  <li>那么 <strong>IIFE</strong> 是什么？</li>
+</ol>
+
+<p>IIFE即 <em>立即调用函数表达式</em> 。在解释器经过它们时执行一次，通常被用作一组代码的封装器。定义形式如下：</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">fun</span> <span class="o">=</span><span class="p">(</span> <span class="kd">function</span><span class="p">(){</span>
+  <span class="p">...</span>
+  <span class="p">}());</span></code></pre></figure>
+
+<p>注意此处右花括号后的最后一对括号告诉解释器立刻调用此函数。</p>
+
+<h2 id="section">创建对象</h2>
+<ol>
+  <li>字面量语法：</li>
+</ol>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">object</span><span class="o">=</span><span class="p">{</span>
+  <span class="na">key</span><span class="p">:</span><span class="nx">attribute</span><span class="p">,</span>
+  <span class="na">fun</span><span class="p">:</span><span class="kd">function</span><span class="p">(){</span>
+    <span class="p">...</span>
+  <span class="p">}</span>
+<span class="p">};</span></code></pre></figure>
+
+<p>访问对象：
+可以使用 <code class="highlighter-rouge">object.key</code> ,也可以使用 <code class="highlighter-rouge">object['key']</code></p>
+
+<ol>
+  <li>构造函数语法：</li>
+</ol>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">obj</span><span class="o">=</span><span class="k">new</span> <span class="nb">Object</span><span class="p">();</span>
+<span class="nx">obj</span><span class="p">.</span><span class="nx">key</span><span class="o">=</span><span class="s1">'attribute'</span><span class="p">;</span>
+<span class="nx">obj</span><span class="p">.</span><span class="kd">function</span> <span class="o">=</span> <span class="nx">functionName</span><span class="p">()</span> <span class="p">{</span>
+  <span class="p">...</span>
+<span class="p">};</span></code></pre></figure>
+
+<p>删除对象属性可用 <code class="highlighter-rouge">delete obj.key</code> 。</p>
+
+<p>通常用于需创建很多相似对象时将构造对象函数用作模板来创建对象。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">functionName</span><span class="p">(</span><span class="nx">args</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">this</span><span class="p">.</span><span class="nx">key</span><span class="o">=</span><span class="nx">args</span><span class="p">;</span>
+  <span class="k">this</span><span class="p">.</span><span class="nx">fun</span><span class="o">=</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="p">...</span>
+  <span class="p">};</span>
+<span class="p">}</span>
+
+<span class="kd">var</span> <span class="nx">obj</span><span class="o">=</span><span class="k">new</span> <span class="nx">functionName</span><span class="p">(</span><span class="nx">arg1</span><span class="p">);</span></code></pre></figure>
+
+<ul>
+  <li>没有声明 <code class="highlighter-rouge">var</code> 则视为全局变量。
+&gt; [1]:《JavaScript &amp; JQuery 交互式Web前端开发》</li>
+</ul>

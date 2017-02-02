@@ -1,0 +1,376 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="language,e.g. 'zh'" xml:lang="language,e.g. 'zh'">
+<head>
+<title>电机的选择</title>
+<!-- 2016-11-03 Thu 17:11 -->
+<meta  http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta  name="generator" content="Org-mode" />
+<meta  name="author" content="徐文婷" />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { color: green; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  pre.src-sh:before    { content: 'sh'; }
+  pre.src-bash:before  { content: 'sh'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-R:before     { content: 'R'; }
+  pre.src-perl:before  { content: 'Perl'; }
+  pre.src-java:before  { content: 'Java'; }
+  pre.src-sql:before   { content: 'SQL'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.right  { text-align: center;  }
+  th.left   { text-align: center;   }
+  th.center { text-align: center; }
+  td.right  { text-align: right;  }
+  td.left   { text-align: left;   }
+  td.center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara:nth-child(2) { display: inline; }
+  .footpara { display: block; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  /*]]>*/-->
+</style>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2013 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="content">
+<h1 class="title">电机的选择</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#sec-1">1. 直流电机</a>
+<ul>
+<li><a href="#sec-1-1">1.1. 分类</a></li>
+<li><a href="#sec-1-2">1.2. 工作原理</a></li>
+</ul>
+</li>
+<li><a href="#sec-2">2. 步进电机</a>
+<ul>
+<li><a href="#sec-2-1">2.1. 概念</a></li>
+<li><a href="#sec-2-2">2.2. 分类</a></li>
+<li><a href="#sec-2-3">2.3. 工作原理</a></li>
+</ul>
+</li>
+<li><a href="#sec-3">3. 舵机</a>
+<ul>
+<li><a href="#sec-3-1">3.1. 概念</a></li>
+<li><a href="#sec-3-2">3.2. 工作原理</a></li>
+</ul>
+</li>
+<li><a href="#sec-4">4. 航模电机</a>
+<ul>
+<li><a href="#sec-4-1">4.1. 分类</a>
+<ul>
+<li><a href="#sec-4-1-1">4.1.1. 有刷电机</a></li>
+<li><a href="#sec-4-1-2">4.1.2. 无刷电机</a></li>
+</ul>
+</li>
+<li><a href="#sec-4-2">4.2. 异同点</a>
+<ul>
+<li><a href="#sec-4-2-1">4.2.1. 相似</a></li>
+<li><a href="#sec-4-2-2">4.2.2. 不同</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+最近想开始做四轴，网上有很多开源的项目，以前没进行过较底层的硬件设计，刷完一些方案后，
+发现电机的选型对四轴很重要。以下是针对一些常用电机的笔记。
+</p>
+
+<p>
+注：此处电机均指电动机
+</p>
+<hr  />
+
+<div id="outline-container-sec-1" class="outline-2">
+<h2 id="sec-1"><span class="section-number-2">1</span> 直流电机</h2>
+<div class="outline-text-2" id="text-1">
+</div><div id="outline-container-sec-1-1" class="outline-3">
+<h3 id="sec-1-1"><span class="section-number-3">1.1</span> 分类</h3>
+<div class="outline-text-3" id="text-1-1">
+<p>
+直流电动机也有很多种，如普通直流电动机，减速直流电动机，无刷直流电动机，伺服直流电动机和
+永磁直流电动机等。
+</p>
+</div>
+</div>
+<div id="outline-container-sec-1-2" class="outline-3">
+<h3 id="sec-1-2"><span class="section-number-3">1.2</span> 工作原理</h3>
+<div class="outline-text-3" id="text-1-2">
+<p>
+此处以普通直流电动机为例。<br  />
+直流电动机有两个控制端子，一端接正，一端接负，使其正转或反转，若两端都为高(低)电平时则不转。
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-2" class="outline-2">
+<h2 id="sec-2"><span class="section-number-2">2</span> 步进电机</h2>
+<div class="outline-text-2" id="text-2">
+</div><div id="outline-container-sec-2-1" class="outline-3">
+<h3 id="sec-2-1"><span class="section-number-3">2.1</span> 概念</h3>
+<div class="outline-text-3" id="text-2-1">
+<p>
+步进电机即将电脉冲信号转变为角位移或线位移的开环控制元件。
+</p>
+</div>
+</div>
+<div id="outline-container-sec-2-2" class="outline-3">
+<h3 id="sec-2-2"><span class="section-number-3">2.2</span> 分类</h3>
+<div class="outline-text-3" id="text-2-2">
+<p>
+反应式、永磁式、混合式
+</p>
+</div>
+</div>
+<div id="outline-container-sec-2-3" class="outline-3">
+<h3 id="sec-2-3"><span class="section-number-3">2.3</span> 工作原理</h3>
+<div class="outline-text-3" id="text-2-3">
+<p>
+没收到一个脉冲信号，电动机转动一个“步距角”，简单地说，就是接受脉冲信号，通过脉冲个数来控
+制角位移量。脉冲频率越高，速度越大。
+</p>
+</div>
+</div>
+</div>
+<div id="outline-container-sec-3" class="outline-2">
+<h2 id="sec-3"><span class="section-number-2">3</span> 舵机</h2>
+<div class="outline-text-2" id="text-3">
+</div><div id="outline-container-sec-3-1" class="outline-3">
+<h3 id="sec-3-1"><span class="section-number-3">3.1</span> 概念</h3>
+<div class="outline-text-3" id="text-3-1">
+<p>
+我们常听到舵机，一般用于机械臂之类，实质上是一种伺服电机。
+</p>
+</div>
+</div>
+<div id="outline-container-sec-3-2" class="outline-3">
+<h3 id="sec-3-2"><span class="section-number-3">3.2</span> 工作原理</h3>
+<div class="outline-text-3" id="text-3-2">
+<p>
+信号进入信号调制芯片，芯片获得直流偏置电压，将获得的直流偏置电压与电位器的电压进行比较，获得
+电压差并输出。其正负控制电动机的正反转。这样输入的脉冲宽度就决定了舵机的转动速度。
+</p>
+</div>
+</div>
+</div>
+<div id="outline-container-sec-4" class="outline-2">
+<h2 id="sec-4"><span class="section-number-2">4</span> 航模电机</h2>
+<div class="outline-text-2" id="text-4">
+</div><div id="outline-container-sec-4-1" class="outline-3">
+<h3 id="sec-4-1"><span class="section-number-3">4.1</span> 分类</h3>
+<div class="outline-text-3" id="text-4-1">
+</div><div id="outline-container-sec-4-1-1" class="outline-4">
+<h4 id="sec-4-1-1"><span class="section-number-4">4.1.1</span> 有刷电机</h4>
+<div class="outline-text-4" id="text-4-1-1">
+</div><ol class="org-ol"><li><a id="sec-4-1-1-1" name="sec-4-1-1-1"></a>概念<br  /><div class="outline-text-5" id="text-4-1-1-1">
+<p>
+内部含有换相电刷的电机。
+</p>
+</div>
+</li>
+<li><a id="sec-4-1-1-2" name="sec-4-1-1-2"></a>工作原理<br  /><div class="outline-text-5" id="text-4-1-1-2">
+<p>
+电刷通过绝缘座固定在电动机后盖上,将电源的正负极引入到转子的换相器上,而换相器连通了转子上的
+线圈,线圈极性不断的交替变换与外壳上固定的磁铁形成作用力而转动起来。
+</p>
+</div>
+</li>
+<li><a id="sec-4-1-1-3" name="sec-4-1-1-3"></a>特点<br  /><div class="outline-text-5" id="text-4-1-1-3">
+<p>
+发热量大，效率低，制造简单，成本低
+</p>
+</div>
+</li>
+<li><a id="sec-4-1-1-4" name="sec-4-1-1-4"></a>有刷空心杯电机<br  /><ol class="org-ol"><li><a id="sec-4-1-1-4-1" name="sec-4-1-1-4-1"></a>概念<br  /><div class="outline-text-6" id="text-4-1-1-4-1">
+<p>
+属于直流，永磁，伺服微特电机。(小四轴多用)
+</p>
+</div>
+</li>
+<li><a id="sec-4-1-1-4-2" name="sec-4-1-1-4-2"></a>特点<br  /><div class="outline-text-6" id="text-4-1-1-4-2">
+<p>
+在结构上突破了传统电机的转子结构形式,采用的是无铁芯转子(无刷空心杯电机定子无铁芯)。空心杯电
+机具有十分突出的节能、控制和拖动特性。
+</p>
+</div>
+</li></ol>
+</li></ol>
+</div>
+<div id="outline-container-sec-4-1-2" class="outline-4">
+<h4 id="sec-4-1-2"><span class="section-number-4">4.1.2</span> 无刷电机</h4>
+<div class="outline-text-4" id="text-4-1-2">
+</div><ol class="org-ol"><li><a id="sec-4-1-2-1" name="sec-4-1-2-1"></a>工作原理<br  /><div class="outline-text-5" id="text-4-1-2-1">
+<p>
+依靠改变输入到无刷电机定子线圈上的电流波交变频率和波形,在绕组线圈周围形成一个绕电机几何轴心旋
+转的磁场,这个磁场驱动转子上的永磁磁钢转动,电机就转起来了。
+</p>
+</div>
+</li>
+<li><a id="sec-4-1-2-2" name="sec-4-1-2-2"></a>特点<br  /><div class="outline-text-5" id="text-4-1-2-2">
+<p>
+动力足，寿命长，效率高
+</p>
+</div>
+</li></ol>
+</div>
+</div>
+<div id="outline-container-sec-4-2" class="outline-3">
+<h3 id="sec-4-2"><span class="section-number-3">4.2</span> 异同点</h3>
+<div class="outline-text-3" id="text-4-2">
+</div><div id="outline-container-sec-4-2-1" class="outline-4">
+<h4 id="sec-4-2-1"><span class="section-number-4">4.2.1</span> 相似</h4>
+<div class="outline-text-4" id="text-4-2-1">
+<p>
+都有转子(里圈的齿，需转动)和定子(外圈的齿，保持不动)。
+</p>
+</div>
+</div>
+<div id="outline-container-sec-4-2-2" class="outline-4">
+<h4 id="sec-4-2-2"><span class="section-number-4">4.2.2</span> 不同</h4>
+<div class="outline-text-4" id="text-4-2-2">
+<ol class="org-ol">
+<li>有刷电机的转子是绕圈线组，与动力输出轴相连，定子是永磁磁钢。
+</li>
+<li>无刷电机的转子是永磁磁钢，连同外壳一起和输出轴相连，定子是绕圈线组。
+</li>
+<li>有刷电机比无刷电机多了用来交替变换电磁场的换场电刷。
+</li>
+<li>无刷电机有三根线，配合电调(电子调速器，即电机驱动)使用。有刷电机有两根线。
+</li>
+</ol>
+
+<blockquote>
+<p>
+参考文献：
+</p>
+<ol class="org-ol">
+<li>刘平, 刘钊. STC15单片机实战指南[M]. 北京:清华大学出版社, 2016.
+</li>
+<li>Crazepony开源四轴飞行器[M]. gitbook
+</li>
+</ol>
+</blockquote>
+
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="author">Author: 徐文婷</p>
+<p class="date">Created: 2016-11-03 Thu 17:11</p>
+<p class="creator"><a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.2.10)</p>
+<p class="validation"><a href="http://validator.w3.org/check?uri=referer">Validate</a></p>
+</div>
+</body>
+</html>

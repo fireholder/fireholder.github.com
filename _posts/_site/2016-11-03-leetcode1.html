@@ -1,0 +1,90 @@
+<p>自去年开始学C以来，也算是接触了许多编程语言，虽说也算是几乎每天都在敲代码，惭愧的是只学了皮毛语法，也要忘个精光，算法更是一窍不通的。这几天翻出以前想刷的编程题，趁着写博客，打算一鼓作气把LeetCode刷完，好好整理一下思路。</p>
+
+<p>由于我接触的有的语言差异很大，其中有的题目可能会用多种语言解答。</p>
+
+<h4 id="ac">注：此处代码均已AC过。</h4>
+
+<h1 id="problem">Problem</h1>
+
+<blockquote>
+  <p>Given an array of integers, return <em>indices</em> of the two numbers such that they add up to a specific target.
+You may assume that each input would have <em>exactly</em> one solution.</p>
+</blockquote>
+
+<blockquote>
+  <p>给定一个整数数组，返回两个数的指数，使得它们加起来的特定目标。
+你可以假设每个输入将有一个确切的解决方案。</p>
+</blockquote>
+
+<ul>
+  <li>Difficulty : Medium</li>
+</ul>
+
+<p><br /></p>
+
+<h1 id="example">Example</h1>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>Given nums = [2, 7, 11, 15], target = 9,
+
+Because nums[0] + nums[1] = 2 + 7 = 9,
+return [0, 1].
+</code></pre>
+</div>
+<p><br /></p>
+
+<h1 id="explanation-1">Explanation 1</h1>
+
+<p>这是第一题，比较简单，根据题意只存在唯一解，大大降低了难度。
+此处我用两个游标遍历整个数组，若找到相加为目标数的两个游标，
+且两个游标不重复的话，则返回值为这两个游标的数组，并且将较小的放在前面。</p>
+
+<h2 id="solution-for-java">Solution for Java</h2>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Solution</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kt">int</span><span class="o">[]</span> <span class="nf">twoSum</span><span class="o">(</span><span class="kt">int</span><span class="o">[]</span> <span class="n">nums</span><span class="o">,</span> <span class="kt">int</span> <span class="n">target</span><span class="o">)</span> <span class="o">{</span>
+        <span class="kt">int</span><span class="o">[]</span> <span class="n">index</span><span class="o">=</span><span class="k">new</span> <span class="kt">int</span><span class="o">[</span><span class="mi">2</span><span class="o">];</span>
+	<span class="k">for</span><span class="o">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="o">;</span><span class="n">i</span><span class="o">&lt;</span><span class="n">nums</span><span class="o">.</span><span class="na">length</span><span class="o">;</span><span class="n">i</span><span class="o">++){</span>
+		<span class="k">for</span><span class="o">(</span><span class="kt">int</span> <span class="n">j</span><span class="o">=</span><span class="mi">0</span><span class="o">;</span><span class="n">j</span><span class="o">&lt;</span><span class="n">nums</span><span class="o">.</span><span class="na">length</span><span class="o">;</span><span class="n">j</span><span class="o">++){</span>
+			<span class="k">if</span><span class="o">((</span><span class="n">nums</span><span class="o">[</span><span class="n">i</span><span class="o">]+</span><span class="n">nums</span><span class="o">[</span><span class="n">j</span><span class="o">]==</span><span class="n">target</span><span class="o">)</span> <span class="o">&amp;&amp;</span> <span class="n">i</span><span class="o">&lt;</span><span class="n">j</span><span class="o">){</span>
+				<span class="n">index</span><span class="o">[</span><span class="mi">0</span><span class="o">]=</span><span class="n">i</span><span class="o">;</span>
+			    	<span class="n">index</span><span class="o">[</span><span class="mi">1</span><span class="o">]=</span><span class="n">j</span><span class="o">;</span>
+			<span class="o">}</span>
+		<span class="o">}</span>
+	<span class="o">}</span>
+	<span class="k">return</span> <span class="n">index</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span></code></pre></figure>
+
+<ul>
+  <li>运行时间:200ms</li>
+</ul>
+
+<p><br /></p>
+
+<h1 id="explanation-2">Explanation 2</h1>
+<p>此处遍历整个list，如果找到目标数减去遍历值仍为所给list中的值，则返回它们的
+游标。</p>
+
+<h2 id="solution-for-python">Solution for Python</h2>
+
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="k">class</span> <span class="nc">Solution</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">twoSum</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nums</span><span class="p">,</span> <span class="n">target</span><span class="p">):</span>
+        <span class="s">""</span>
+        <span class="p">:</span><span class="nb">type</span> <span class="n">nums</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span>
+        <span class="p">:</span><span class="nb">type</span> <span class="n">target</span><span class="p">:</span> <span class="nb">int</span>
+        <span class="p">:</span><span class="n">rtype</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span>
+        <span class="s">""</span>
+        <span class="n">index</span><span class="o">=</span><span class="p">[]</span>
+	    	<span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">num</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">nums</span><span class="p">):</span>
+	    		<span class="k">if</span> <span class="n">target</span><span class="o">-</span><span class="n">num</span> <span class="ow">in</span> <span class="n">nums</span><span class="p">:</span>
+	    			<span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">nums</span><span class="p">)):</span>
+	    				<span class="k">if</span> <span class="n">nums</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">==</span><span class="n">target</span><span class="o">-</span><span class="n">num</span> <span class="ow">and</span> <span class="n">i</span><span class="o">&lt;</span><span class="n">j</span><span class="p">:</span>
+	    					<span class="n">index</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">i</span><span class="p">)</span>
+	    					<span class="n">index</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">j</span><span class="p">)</span>
+	    					<span class="k">return</span> <span class="n">index</span>
+    					
+		</code></pre></figure>
+
+<ul>
+  <li>运行时间：1222ms</li>
+</ul>

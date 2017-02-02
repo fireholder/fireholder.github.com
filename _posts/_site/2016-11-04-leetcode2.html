@@ -1,0 +1,121 @@
+<h1 id="problem">Problem</h1>
+<blockquote>
+  <p>You are given two linked lists representing two non-negative numbers. The digits are stored in reverse order and each of their nodes contain a single digit. Add the two numbers and return it as a linked list.</p>
+</blockquote>
+
+<blockquote>
+  <p>给出代表两个非负数的两个链表。数字存储在相反的顺序并且它们的每一个节点包含单个数字。添加两个数字，并返回它作为一个链表。
+* Difficulty: Medium</p>
+</blockquote>
+
+<h1 id="example">Example</h1>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>Input: (2 -&gt; 4 -&gt; 3) + (5 -&gt; 6 -&gt; 4)
+Output: 7 -&gt; 0 -&gt; 8
+</code></pre>
+</div>
+
+<h1 id="explanation">Explanation</h1>
+<p>在学C语言的时候学到过一种数据结构“链表”，即linked-list，讲C语言时老师一带而过，后来加了程设为了做一道linked-list实现增删改查的题，把浙大翁恺老师的C语言程序设计中链表这一块翻来覆去看了无数遍。可惜抄了许多代码，印象也不甚深刻。只是在C语言中是通过指针和struct，在Java中通过属性，Java有LinkedList数据类型，是一个双向链表。</p>
+
+<p>此处定义一个单向链表节点的类ListNode。首先初始化Node的和为sum=0，判断l1和l2是否为空，若不为空，则将其Node值加到sum上，实现了两个linked-list的对应节点相加。初始化一个初值为0的节点ret，即链表的根，并把它赋给一个新节点临时变量cur，将sum取余的值赋给cur的值，cur即储存链表的最后一个节点。让sum等于sum的十位数。判断两个链表和sum有一个不为0时，让cur指向一个新的val为0的节点，并且继续循环，此时之前的sum继续与两个链表的值相加，实现进位。当它们都为0时跳出循环，返回根ret，即返回了整个链表。</p>
+
+<h2 id="solution-for-java">Solution for Java</h2>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="cm">/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode(int x) { val = x; }
+ * }
+ */</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Solution</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="n">ListNode</span> <span class="nf">addTwoNumbers</span><span class="o">(</span><span class="n">ListNode</span> <span class="n">l1</span><span class="o">,</span> <span class="n">ListNode</span> <span class="n">l2</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">ListNode</span> <span class="n">ret</span><span class="o">=</span><span class="k">new</span> <span class="n">ListNode</span><span class="o">(</span><span class="mi">0</span><span class="o">);</span>
+        <span class="n">ListNode</span> <span class="n">cur</span><span class="o">=</span><span class="n">ret</span><span class="o">;</span>
+        <span class="kt">int</span> <span class="n">sum</span><span class="o">=</span><span class="mi">0</span><span class="o">;</span>
+        
+        <span class="k">while</span><span class="o">(</span><span class="kc">true</span><span class="o">){</span>
+        <span class="k">if</span><span class="o">(</span><span class="n">l1</span><span class="o">!=</span><span class="kc">null</span><span class="o">){</span>
+            <span class="n">sum</span><span class="o">+=</span><span class="n">l1</span><span class="o">.</span><span class="na">val</span><span class="o">;</span>
+            <span class="n">l1</span><span class="o">=</span><span class="n">l1</span><span class="o">.</span><span class="na">next</span><span class="o">;</span>
+        <span class="o">}</span>
+        <span class="k">if</span><span class="o">(</span><span class="n">l2</span><span class="o">!=</span><span class="kc">null</span><span class="o">){</span>
+            <span class="n">sum</span><span class="o">+=</span><span class="n">l2</span><span class="o">.</span><span class="na">val</span><span class="o">;</span>
+            <span class="n">l2</span><span class="o">=</span><span class="n">l2</span><span class="o">.</span><span class="na">next</span><span class="o">;</span>
+        <span class="o">}</span>
+        <span class="n">cur</span><span class="o">.</span><span class="na">val</span><span class="o">=</span><span class="n">sum</span><span class="o">%</span><span class="mi">10</span><span class="o">;</span>
+        <span class="n">sum</span><span class="o">/=</span><span class="mi">10</span><span class="o">;</span>
+        <span class="k">if</span><span class="o">(</span><span class="n">l1</span><span class="o">!=</span><span class="kc">null</span> <span class="o">||</span> <span class="n">l2</span><span class="o">!=</span><span class="kc">null</span> <span class="o">||</span> <span class="n">sum</span><span class="o">!=</span><span class="mi">0</span><span class="o">){</span>
+            <span class="n">cur</span><span class="o">=(</span><span class="n">cur</span><span class="o">.</span><span class="na">next</span><span class="o">=</span><span class="k">new</span> <span class="n">ListNode</span><span class="o">(</span><span class="mi">0</span><span class="o">));</span>
+        <span class="o">}</span>
+        <span class="k">else</span> 
+        <span class="k">break</span><span class="o">;</span>
+        <span class="o">}</span>
+        
+        <span class="k">return</span> <span class="n">ret</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span></code></pre></figure>
+
+<ul>
+  <li>运行时间：52ms</li>
+  <li>此处遇到一个问题，即Java中0和1为int，不为bool值，此处与C不同。</li>
+</ul>
+
+<h1 id="explanation-2">Explanation 2</h1>
+
+<p>此处算法思想和上述Java代码是一样的，注意ret和cur指向的同一个地址，所以改变cur，ret也会改变。</p>
+
+<p>另外，在C里要给结构体ListNode分配内存空间，否则会报错。</p>
+
+<h2 id="solution-for-c">Solution for C</h2>
+
+<figure class="highlight"><pre><code class="language-c" data-lang="c"><span class="cm">/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     struct ListNode *next;
+ * };
+ */</span>
+
+<span class="k">struct</span> <span class="n">ListNode</span><span class="o">*</span> <span class="nf">addTwoNumbers</span><span class="p">(</span><span class="k">struct</span> <span class="n">ListNode</span><span class="o">*</span> <span class="n">l1</span><span class="p">,</span> <span class="k">struct</span> <span class="n">ListNode</span><span class="o">*</span> <span class="n">l2</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">struct</span> <span class="n">ListNode</span> <span class="o">*</span><span class="n">ret</span><span class="o">=</span><span class="p">(</span><span class="k">struct</span> <span class="n">ListNode</span><span class="o">*</span><span class="p">)</span> <span class="p">(</span><span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">ListNode</span><span class="p">)));</span>    <span class="c1">//   定义返回Node 
+</span>    <span class="k">struct</span> <span class="n">ListNode</span> <span class="o">*</span><span class="n">cur</span><span class="o">=</span><span class="n">ret</span><span class="p">;</span>                                                     <span class="c1">//定义临时变量cur，指向最后一个Node
+</span>    <span class="n">ret</span><span class="o">-&gt;</span><span class="n">val</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span>
+    <span class="n">ret</span><span class="o">-&gt;</span><span class="n">next</span><span class="o">=</span><span class="nb">NULL</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">sum</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span>
+    <span class="k">while</span><span class="p">(</span><span class="nb">true</span><span class="p">){</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">l1</span><span class="o">!=</span><span class="nb">NULL</span><span class="p">){</span>
+        <span class="n">sum</span><span class="o">+=</span><span class="p">(</span><span class="n">l1</span><span class="o">-&gt;</span><span class="n">val</span><span class="p">);</span>
+        <span class="n">l1</span><span class="o">=</span><span class="p">(</span><span class="n">l1</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">l2</span><span class="o">!=</span><span class="nb">NULL</span><span class="p">){</span>
+        <span class="n">sum</span><span class="o">+=</span><span class="p">(</span><span class="n">l2</span><span class="o">-&gt;</span><span class="n">val</span><span class="p">);</span>
+        <span class="n">l2</span><span class="o">=</span><span class="p">(</span><span class="n">l2</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">);</span>
+    <span class="p">}</span>
+    
+   
+    <span class="n">cur</span><span class="o">-&gt;</span><span class="n">val</span><span class="o">=</span><span class="n">sum</span><span class="o">%</span><span class="mi">10</span><span class="p">;</span>                                                   <span class="c1">//求出相加的值赋给cur-&gt;val
+</span>      <span class="n">sum</span><span class="o">/=</span><span class="mi">10</span><span class="p">;</span>                                                         <span class="c1">//进位
+</span>
+  
+    <span class="k">if</span><span class="p">(</span><span class="n">l1</span><span class="o">!=</span><span class="nb">NULL</span> <span class="o">||</span> <span class="n">l2</span><span class="o">!=</span><span class="nb">NULL</span> <span class="o">||</span><span class="n">sum</span><span class="o">!=</span><span class="mi">0</span><span class="p">){</span>
+  
+<span class="p">(</span><span class="n">cur</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">)</span><span class="o">=</span><span class="p">(</span><span class="k">struct</span> <span class="n">ListNode</span><span class="o">*</span><span class="p">)(</span><span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">ListNode</span><span class="p">)));</span>            
+  
+    <span class="p">(</span><span class="n">cur</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">val</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span>
+        <span class="p">(</span><span class="n">cur</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">next</span><span class="o">=</span><span class="nb">NULL</span><span class="p">;</span>
+        <span class="n">cur</span><span class="o">=</span><span class="n">cur</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span>                                                 <span class="c1">//让cur指向cur-&gt;next
+</span>    <span class="p">}</span>
+    <span class="k">else</span> <span class="k">break</span><span class="p">;</span>
+    <span class="p">}</span>
+    
+    
+    
+    <span class="k">return</span> <span class="n">ret</span><span class="p">;</span>
+<span class="p">}</span></code></pre></figure>
+
+<ul>
+  <li>运行时间：18ms</li>
+</ul>
