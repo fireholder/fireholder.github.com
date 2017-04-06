@@ -1,0 +1,737 @@
+---
+title: PWM 详解
+tags: [单片机]
+---
+
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<title>PWM 详解</title>
+<!-- 2017-04-06 Thu 09:09 -->
+<meta  http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta  name="generator" content="Org-mode" />
+<meta  name="author" content="徐文婷" />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { color: green; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  pre.src-sh:before    { content: 'sh'; }
+  pre.src-bash:before  { content: 'sh'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-R:before     { content: 'R'; }
+  pre.src-perl:before  { content: 'Perl'; }
+  pre.src-java:before  { content: 'Java'; }
+  pre.src-sql:before   { content: 'SQL'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.right  { text-align: center;  }
+  th.left   { text-align: center;   }
+  th.center { text-align: center; }
+  td.right  { text-align: right;  }
+  td.left   { text-align: left;   }
+  td.center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara:nth-child(2) { display: inline; }
+  .footpara { display: block; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-ed { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  /*]]>*/-->
+</style>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2013 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="content">
+<h1 class="title">PWM 详解</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#sec-1">1. 什么是PWM</a>
+<ul>
+<li><a href="#sec-1-1">1.1. 定义</a></li>
+<li><a href="#sec-1-2">1.2. 占空比</a>
+<ul>
+<li><a href="#sec-1-2-1">1.2.1. 两个概念</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#sec-2">2. PWM 在各单片机中的具体使用</a>
+<ul>
+<li><a href="#sec-2-1">2.1. 51 单片机</a>
+<ul>
+<li><a href="#sec-2-1-1">2.1.1. STC89C52RC</a></li>
+<li><a href="#sec-2-1-2">2.1.2. STC15F2K60S2</a></li>
+</ul>
+</li>
+<li><a href="#sec-2-2">2.2. STM32</a>
+<ul>
+<li><a href="#sec-2-2-1">2.2.1. 原理</a></li>
+<li><a href="#sec-2-2-2">2.2.2. 代码例程（库函数版）</a></li>
+</ul>
+</li>
+<li><a href="#sec-2-3">2.3. MSP</a>
+<ul>
+<li><a href="#sec-2-3-1">2.3.1. 原理</a></li>
+<li><a href="#sec-2-3-2">2.3.2. 代码例程</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-sec-1" class="outline-2">
+<h2 id="sec-1"><span class="section-number-2">1</span> 什么是PWM</h2>
+<div class="outline-text-2" id="text-1">
+</div><div id="outline-container-sec-1-1" class="outline-3">
+<h3 id="sec-1-1"><span class="section-number-3">1.1</span> 定义</h3>
+<div class="outline-text-3" id="text-1-1">
+<p>
+脉冲宽度调制（英语：Pulse Width Modulation，缩写：PWM），简称脉宽调制，是将模拟信号变换为脉冲的一种技术，一般变换后脉冲的周期固定，但脉冲的占空比会依模拟信号的大小而改变。直白地说，即占空比可调的一个波。
+</p>
+
+<p>
+模拟信号的值可以连续变化，其时间和幅度的分辨率都没有限制。但模拟电路容易随时间漂移而难以调节，易严重发热且对噪声敏感。而用数字方式控制模拟电路可以大幅度降低系统的成本和功耗。
+</p>
+
+<p>
+PWM技术是一种对模拟信号电平的数字编码方法，通过使用高分辨率计数器（调制频率）调制方波的占空比，从而实现对一个模拟信号的电平进行编码。其最大的优点是从处理器到被控对象之间的所有信号都是数字形式的，无需再进行数模转换过程；而且对噪声的抗干扰能力也大大增强（噪声只有在强到足以将逻辑值改变时，才可能对数字信号产生实质的影响），这也是PWM在通讯等信号传输行业得到大量应用的主要原因。<sup><a id="fnr.1" name="fnr.1" class="footref" href="#fn.1">1</a></sup>
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-1-2" class="outline-3">
+<h3 id="sec-1-2"><span class="section-number-3">1.2</span> 占空比</h3>
+<div class="outline-text-3" id="text-1-2">
+<p>
+   在一串理想的脉冲序列中（如方波），代表1的正脉冲的持续时间与脉冲总周期的比值。
+例如：脉冲宽度1μs，信号周期4μs的脉冲序列占空比为0.25。
+</p>
+
+<p>
+PWM波的高电平通过的时候，有打开/激励的作用，而低电平通过的时候有关断的作用。当PWM波的频率较高时，看不出明显的开关变化，控制比较平滑。<sup><a id="fnr.2" name="fnr.2" class="footref" href="#fn.2">2</a></sup>
+</p>
+</div>
+
+<div id="outline-container-sec-1-2-1" class="outline-4">
+<h4 id="sec-1-2-1"><span class="section-number-4">1.2.1</span> 两个概念</h4>
+<div class="outline-text-4" id="text-1-2-1">
+<ol class="org-ol">
+<li>同频率占空比：频率（周期）相同，占空比（脉宽）不同。
+</li>
+<li>占空比相同，频率不同。
+</li>
+</ol>
+</p>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-2" class="outline-2">
+<h2 id="sec-2"><span class="section-number-2">2</span> PWM 在各单片机中的具体使用</h2>
+<div class="outline-text-2" id="text-2">
+</div><div id="outline-container-sec-2-1" class="outline-3">
+<h3 id="sec-2-1"><span class="section-number-3">2.1</span> 51 单片机</h3>
+<div class="outline-text-3" id="text-2-1">
+</div><div id="outline-container-sec-2-1-1" class="outline-4">
+<h4 id="sec-2-1-1"><span class="section-number-4">2.1.1</span> STC89C52RC<sup><a id="fnr.3" name="fnr.3" class="footref" href="#fn.3">3</a></sup></h4>
+<div class="outline-text-4" id="text-2-1-1">
+</div><ol class="org-ol"><li><a id="sec-2-1-1-1" name="sec-2-1-1-1"></a>原理<br  /><div class="outline-text-5" id="text-2-1-1-1">
+<p>
+实验室最开始用的是STC89C52RC，此种单片机没有PWM端口，只能通过定时器软件模拟I/O输出PWM。
+</p>
+
+<p>
+STC89C51RC/RD+ 系列单片机,可设定定时 / 计数器,通过 P1.0 输出时钟。P1.0 除作通用 I/O口外还有两个功能可供选用:用于定时 / 计数器 2 的外部计数输入和定时 / 计数器 2 时钟信号输出。
+</p>
+
+<p>
+公式如下:
+</p>
+
+<div class="center">
+<p>
+
+</p>
+
+<p>
+时钟信号输出频率=fosc/{n*[65536-(RCAP2H,RCAP2L)]}
+</p>
+</div>
+
+<p>
+其中，n = 2 ,6 时钟 / 机器周期;n = 4 ,1 2 时钟 / 机器周期
+</p>
+
+<p>
+从公式可见,在主振频率(fosc)设定后,时钟信号输出频率就取决于定时计数初值的设定。
+</p>
+
+<p>
+在时钟输出模式下,计数器回 0 溢出不会产生中断请求。这种功能相当于定时/计数器2用作波特率发生器,同时又可以作时钟发生器。但必须注意,无论如何波特率发生器和时钟发生器不能单独确定各自不同的频率。原因是两者都用同一个陷阱寄存器 R C A P 2 H 、R C A P 2 L ,不可能出现两个计数初值。
+</p>
+
+
+<div class="figure">
+<p><img src="http://ogw6sutvr.bkt.clouddn.com/Timer%E8%AE%A1%E6%95%B0%E4%B8%8EPWM%E6%B3%A2%E5%BD%A2%E5%85%B3%E7%B3%BB.png" alt="Timer%E8%AE%A1%E6%95%B0%E4%B8%8EPWM%E6%B3%A2%E5%BD%A2%E5%85%B3%E7%B3%BB.png" />
+</p>
+</div>
+</div>
+</li>
+<li><a id="sec-2-1-1-2" name="sec-2-1-1-2"></a>代码例程<br  /><div class="outline-text-5" id="text-2-1-1-2">
+<div class="org-src-container">
+
+
+{% highlight c %}
+#include <reg52.h>
+
+//--定义使用的IO口--//
+sbit PWM=P1^0;
+
+//--定义一个全局变量--//
+unsigned char timer1;
+
+void Time1Config();
+
+
+void main(void)
+{
+	Time1Config();
+	while(1)
+	{
+		if(timer1&gt;100)  //PWM周期为100*0.5ms
+		{
+			timer1=0;
+		}
+		if(timer1 &lt; 30) //改变30这个值可以改变直流电机的速度,此处30即占空比30%
+		{
+			PWM=1;
+		}
+		else
+		{
+			PWM=0;
+		}
+	}
+
+
+ }
+
+void Time1Config()
+{
+	TMOD|= 0x10;   //设置定时计数器工作方式1为定时器
+
+	//--定时器赋初始值，12MHZ下定时0.5ms--//
+	TH1 = 0xFE;
+	TL1 = 0x0C;
+
+
+	ET1 = 1;         //开启定时器1中断
+	EA = 1;
+	TR1 = 1;         //开启定时器
+}
+
+void Time1(void) interrupt 3    //3 为定时器1的中断号  1 定时器0的中断号 0 外部中断1 2 外部中断2  4 串口中断
+{
+	TH1 = 0xFE;  //重新赋初值
+	TL1 = 0x0C;
+	timer1++;
+}
+
+{% endhighlight %}
+
+
+</div>
+</div>
+</li></ol>
+</div>
+
+<div id="outline-container-sec-2-1-2" class="outline-4">
+<h4 id="sec-2-1-2"><span class="section-number-4">2.1.2</span> STC15F2K60S2<sup><a id="fnr.4" name="fnr.4" class="footref" href="#fn.4">4</a></sup></h4>
+<div class="outline-text-4" id="text-2-1-2">
+</div><ol class="org-ol"><li><a id="sec-2-1-2-1" name="sec-2-1-2-1"></a>原理<br  /><div class="outline-text-5" id="text-2-1-2-1">
+<p>
+STC15系列的单片机提供了两类形式的PWM产生方法：一类是利用内部可编程计数阵列，即软件模拟。一类是内部PWM发生器来产生，即硬件模拟。
+</p>
+
+<p>
+<img src="http://ogw6sutvr.bkt.clouddn.com/8%E4%BD%8DPWM%E6%A8%A1%E5%BC%8F%E7%BB%93%E6%9E%84%E5%9B%BE.png" alt="8%E4%BD%8DPWM%E6%A8%A1%E5%BC%8F%E7%BB%93%E6%9E%84%E5%9B%BE.png" /></p>
+
+<p>
+PCA模块n工作于8位PWM模式时，将{0,CL[7:0]}与捕获寄存器{EPCnL,CCAPnL[7:0]}进行比较，如图所示。当{0,CL[7:0]}的值小于{EPCnL,CCAPnL[7:0]}时，输出为低，否则输出为高。当CL的值由FF变为00溢出时，{EPCnH,CCAPnH[7:0]}的内容装载到{EPCnL,CCAPnL[7:0]}中。从而实现无干扰地更新PWM。
+</p>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+<caption class="t-above"><span class="table-number">Table 1:</span> I/O口作为PWM输出时的状态表</caption>
+
+<colgroup>
+<col  class="left" />
+
+<col  class="left" />
+</colgroup>
+<tbody>
+<tr>
+<td class="left">常态I/O口的状态</td>
+<td class="left">作为PWM输出时的状态</td>
+</tr>
+
+<tr>
+<td class="left">弱上拉/准双向</td>
+<td class="left">强推挽输出/强上拉输出(需加限流电阻 1K~10K)</td>
+</tr>
+
+<tr>
+<td class="left">强推挽输出/强上拉输出</td>
+<td class="left">强推挽输出/强上拉输出(需加限流电阻 1K~10K)</td>
+</tr>
+
+<tr>
+<td class="left">仅为输入/高组态</td>
+<td class="left">PWM 无效</td>
+</tr>
+
+<tr>
+<td class="left">开漏</td>
+<td class="left">开漏</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+
+<ol class="org-ol"><li><a id="sec-2-1-2-1-1" name="sec-2-1-2-1-1"></a>
+
+  外部时钟频率计算公式<br  /><div class="outline-text-6" id="text-2-1-2-1-1">
+<p>
+当PWM是8位时：
+</p>
+<div class="center">
+<p>
+PWM的频率=PCA时钟输入源频率/256
+</p>
+</div>
+
+<p>
+其中，PCA时钟输入源可以为：SYSclk，SYSclk/2,SYSclk/2,SYSclk/4,SYSclk/6,SYSclk/8,SYSclk/12,定时器0的溢出，ECI/P1.2。
+</p>
+</div>
+</li></ol>
+</li>
+
+<li><a id="sec-2-1-2-2" name="sec-2-1-2-2"></a>硬件模拟代码示例<br  /><div class="outline-text-5" id="text-2-1-2-2">
+
+<div class="figure">
+<p><img src="http://ogw6sutvr.bkt.clouddn.com/PCA%E6%A8%A1%E5%9D%97%E5%B7%A5%E4%BD%9C%E9%AB%98%E9%80%9F%E8%84%89%E5%86%B2%E8%BE%93%E5%87%BA%E6%A8%A1%E5%BC%8F%E7%BB%93%E6%9E%84%E5%9B%BE.png" alt="PCA%E6%A8%A1%E5%9D%97%E5%B7%A5%E4%BD%9C%E9%AB%98%E9%80%9F%E8%84%89%E5%86%B2%E8%BE%93%E5%87%BA%E6%A8%A1%E5%BC%8F%E7%BB%93%E6%9E%84%E5%9B%BE.png" />
+</p>
+</div>
+
+<div class="org-src-container">
+
+
+
+{% highlight c %}
+
+#include "BSP_Include.h"
+#include "STC15_FS.h"
+#define CCP_S0 0x10
+#define CCP_S1 0x20
+//P_SW1.4
+//P_SW1.5
+void main(void)
+{
+ACC = P_SW1;
+ACC &amp;= ~(CCP_S0 | CCP_S1);
+//CCP_S0=1 CCP_S1=0
+ACC |= CCP_S0;
+P_SW1 = ACC;
+//P3.5/CCP0_2、P3.6/CCP1_2
+CCON = 0;
+//初始化 PCA 控制寄存器/PCA 定时器停止/清除 CF 标志/清除模块中断标志
+CL = 0;
+//复位 PCA 寄存器
+CH = 0;
+CMOD = 0x02;
+//设置 PCA 时钟源/禁止 PCA 定时器溢出中断
+
+PCA_PWM0 = 0x00;                //PCA 模块 0 工作于 8 位 PWM
+CCAP0H = CCAP0L = 0x20;         //PWM0 的占空比为 87.5%((100H-20H)/100H)
+CCAPM0 = 0x42;                  //PCA 模块 0 为 8 位 PWM 模式
+PCA_PWM1 = 0x40;                 //PCA 模块 1 工作于 7 位 PWM
+CCAP1H = CCAP1L = 0x20;         //PWM1的占空比为75%((80H-20H)/80H)
+
+{% endhighlight %}
+
+
+</div>
+
+<p>
+更新占空比数据：
+</p>
+
+<div class="org-src-container">
+
+
+{% highlight c %}
+
+void PWMn_Update(u8 PCA_id, u16 pwm)
+{
+if(pwm &gt; PWM_HIGH_MAX) pwm = PWM_HIGH_MAX;
+//如果写入大于最大占空比数据,强制为最大占空比。
+if(pwm &lt; PWM_HIGH_MIN) pwm = PWM_HIGH_MIN;
+//如果写入小于最小占空比数据,强制为最小占空比。
+if(PCA_id == PCA0)
+{
+CR = 0;
+//停止 PCA 一会, 一般不会影响 PWM。
+PWM0_high = pwm;
+//数据在正确范围,则装入占空比寄存器。
+PWM0_low = PWM_DUTY - pwm;
+//计算并保存 PWM 输出低电平的 PCA 时钟脉冲个数。
+CR = 1;
+//启动 PCA。
+}
+else if(PCA_id == PCA1)
+{
+CR = 0;
+//停止 PCA。
+PWM1_high = pwm;
+//数据在正确范围,则装入占空比寄存器。
+PWM1_low = PWM_DUTY - pwm;
+//计算并保存 PWM 输出低电平的 PCA 时钟脉冲个数。
+CR = 1;
+//启动 PCA。
+}
+else if(PCA_id == PCA2)
+CR = 0;
+//停止 PCA。
+PWM2_high = pwm;
+//数据在正确范围,则装入占空比寄存器。
+PWM2_low = PWM_DUTY - pwm;
+//计算并保存 PWM 输出低电平的 PCA 时钟脉冲个数。
+CR = 1;
+//启动 PCA。
+}
+}
+
+{% endhighlight %}
+
+
+</div>
+</div>
+</li></ol>
+</div>
+</div>
+
+<div id="outline-container-sec-2-2" class="outline-3">
+<h3 id="sec-2-2"><span class="section-number-3">2.2</span> STM32<sup><a id="fnr.5" name="fnr.5" class="footref" href="#fn.5">5</a></sup></h3>
+<div class="outline-text-3" id="text-2-2">
+</div><div id="outline-container-sec-2-2-1" class="outline-4">
+<h4 id="sec-2-2-1"><span class="section-number-4">2.2.1</span> 原理</h4>
+<div class="outline-text-4" id="text-2-2-1">
+<p>
+   STM32 的定时器除了 TIM6 和 7。其他的定时器都可以用来产生 PWM 输出。其中高级定
+时器 TIM1 和 TIM8 可以同时产生多达 7 路的 PWM 输出。而通用定时器也能同时产生多达 4
+路的 PWM 输出,这样, STM32 最多可以同时产生 30 路 PWM 输出。
+</p>
+
+<p>
+STM32通用定时器TIMx产生PWM需要：捕获 /比较模式寄存器( TIMx<sub>CCMR1</sub>/2)、捕获/比较使能寄存器( TIMx<sub>CCER</sub>)、捕获/比较寄存器( TIMx<sub>CCR1</sub>~4)。
+</p>
+
+<p>
+   捕获/比较模式寄存器( TIMx<sub>CCMR1</sub>/2),该寄存器总共有 2 个, TIMx _CCMR1
+和 TIMx _CCMR2。 TIMx<sub>CCMR1</sub> 控制 CH1 和 2,而 TIMx<sub>CCMR1</sub> 控制 CH3 和 4。
+</p>
+
+<p>
+捕获/比较使能寄存器( TIMx<sub>CCER</sub>)控制着各个输入输出通道的开关。
+</p>
+
+<p>
+   捕获/比较寄存器( TIMx<sub>CCR1</sub>~4),该寄存器总共有 4 个,对应 4 个输通道 CH1~4。在输出模式下,该寄存器的值与 CNT 的值比较,根据比较结果产生相应动作。利用这点,
+我们通过修改这个寄存器的值,就可以控制 PWM 的输出脉宽了。
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-2-2-2" class="outline-4">
+<h4 id="sec-2-2-2"><span class="section-number-4">2.2.2</span> 代码例程（库函数版）</h4>
+<div class="outline-text-4" id="text-2-2-2">
+<div class="org-src-container">
+
+
+{% highlight c %}
+
+void pwm_init()
+{
+	GPIO_InitTypeDef GPIO_InitStructure;   //声明一个结构体变量，用来初始化GPIO
+
+	TIM_TimeBaseInitTypeDef TIM_TimeBaseInitStructure;//声明一个结构体变量，用来初始化定时器
+
+	TIM_OCInitTypeDef TIM_OCInitStructure;//根据TIM_OCInitStruct中指定的参数初始化外设TIMx
+
+	/* 开启时钟 */
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOC,ENABLE);
+	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM3,ENABLE);
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO,ENABLE);
+
+	/*  配置GPIO的模式和IO口 */
+	GPIO_InitStructure.GPIO_Pin=GPIO_Pin_7;
+	GPIO_InitStructure.GPIO_Speed=GPIO_Speed_50MHz;
+	GPIO_InitStructure.GPIO_Mode=GPIO_Mode_AF_PP;//复用推挽输出
+	GPIO_Init(GPIOC,&amp;GPIO_InitStructure);
+
+
+	//TIM3定时器初始化
+	TIM_TimeBaseInitStructure.TIM_Period = 900;        //不分频,PWM 频率=72000/900=8Khz//设置自动重装载寄存器周期的值
+	TIM_TimeBaseInitStructure.TIM_Prescaler = 0;//设置用来作为TIMx时钟频率预分频值，100Khz计数频率
+	TIM_TimeBaseInitStructure.TIM_ClockDivision = 0;//设置时钟分割:TDTS = Tck_tim
+	TIM_TimeBaseInitStructure.TIM_CounterMode = TIM_CounterMode_Up; //TIM向上计数模式
+	TIM_TimeBaseInit(TIM3, &amp; TIM_TimeBaseInitStructure);
+
+	GPIO_PinRemapConfig(GPIO_FullRemap_TIM3,ENABLE);//改变指定管脚的映射    //pC7
+
+	//PWM初始化       //根据TIM_OCInitStruct中指定的参数初始化外设TIMx
+	TIM_OCInitStructure.TIM_OCMode=TIM_OCMode_PWM1;
+	TIM_OCInitStructure.TIM_OutputState=TIM_OutputState_Enable;//PWM输出使能
+	TIM_OCInitStructure.TIM_OCPolarity=TIM_OCPolarity_Low;
+
+	TIM_OC2Init(TIM3,&amp;TIM_OCInitStructure);
+	//注意此处初始化时TIM_OC2Init而不是TIM_OCInit，否则会出错。因为固件库的版本不一样。
+
+	TIM_OC2PreloadConfig(TIM3, TIM_OCPreload_Enable);//使能或者失能TIMx在CCR2上的预装载寄存器
+
+	TIM_Cmd(TIM3,ENABLE);//使能或者失能TIMx外设
+}
+
+
+int main()
+{
+	u8 fx=1;//方向
+	u32 ti=0;
+	pwm_init();      //PWM初始化
+	while(1)
+	{
+		delay_ms(10);
+		if(fx==1)
+		{
+			ti++;
+			if(ti&gt;300)
+			{
+				fx=0;
+			}
+		}
+		else
+		{
+			ti--;
+			if(ti==0)
+			{
+				fx=1;
+			}
+		}
+		TIM_SetCompare2(TIM3, ti);//设置TIMx捕获比较2寄存器值
+	}
+}
+
+{% endhighlight %}
+
+
+</div>
+</div>
+</div>
+</div>
+<div id="outline-container-sec-2-3" class="outline-3">
+<h3 id="sec-2-3"><span class="section-number-3">2.3</span> MSP</h3>
+<div class="outline-text-3" id="text-2-3">
+</div><div id="outline-container-sec-2-3-1" class="outline-4">
+<h4 id="sec-2-3-1"><span class="section-number-4">2.3.1</span> 原理</h4>
+<div class="outline-text-4" id="text-2-3-1">
+<p>
+以MSP430F5310中的TimerA0为例，在TimerA0寄存器中，除了TA0CCR0用于设置PWM波的周期外，还有TA0CCR1～TA0CCR4这4个设置PWM波通道输出信号占空比用的寄存器。这些寄存器所控制的PWM输出通道通常是某个引脚的第二功能。为调节占空比，每个寄存器可以设置从0～TA0CCR0的数值。这样，随着TAxR的计数，TA0CCRn也在不断地和TA0CCR0比较，最终，PWM通道引脚根据输出设置决定输出波形的形式。
+</p>
+
+<p>
+如：设定输出模式为“等于TAxCCR0时输出高，小于时输出低”，定时器计数模式为增计数模式。在定时器开始工作时，可认为TA0R，TA0CCR0，TA0CCRn 都是从0开始增加，并且增加的频率都是定时器的时钟频率。因此在最初的一段时间，这三个寄存器的值相等。根据设置，TA0CCRn=TA0CCR0,输出高电平。当上述三个数据达到TA0CCRn时，可认为TA0CCRn不再增加，而另两个值继续增加。此时，TA0CCR0&gt;TA0CCRn,输出低电平。而当TA0R增加到TA0CCRn设置的数值时则溢出，重新开始计时，完成了一个PWM波的输出周期。
+</p>
+
+<p>
+因此我们可以通过设置TA0CCRn的大小来控制占空比，它越大，占空比越大。
+</p>
+
+<p>
+计算依据：
+</p>
+<div class="center">
+<p>
+定时器数X个数所用的时间=PWM波的周期
+</p>
+</div>
+
+<p>
+由于定时器TAxR中的计数值是不断周期性变化的，因此这个变化周期就是输出的PWM波的周期。
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-2-3-2" class="outline-4">
+<h4 id="sec-2-3-2"><span class="section-number-4">2.3.2</span> 代码例程</h4>
+<div class="outline-text-4" id="text-2-3-2">
+<div class="org-src-container">
+
+
+{% highlight c %}
+
+TA0CTL|=MC_1;                   //SMCLK,up-down模式（增减计数模式），周期×2
+TA0CCTL1=OUTMOD_7;              //CCR1通道使用reset/set模式
+TA0CTL=TASSEL_2 | MC_1 |TACLR;  //最后的设置必须和TACLR一起才有效
+TA0CTL |= ID_3;                 //4分频
+TA0CCR0 =2500;                  //设置PWM的频率为500Hz。TAxCCR0×2×1/2.5MHz=1/500
+
+period*=10;                     //将0～250放大到0～2500
+TA0CCR1=period;                 //设定占空比
+
+{% endhighlight %}
+
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footnotes">
+<h2 class="footnotes">Footnotes: </h2>
+<div id="text-footnotes">
+
+<div class="footdef"><sup><a id="fn.1" name="fn.1" class="footnum" href="#fnr.1">1</a></sup> <p class="footpara">
+<a href="https://zh.wikipedia.org/wiki/%E8%84%88%E8%A1%9D%E5%AF%AC%E5%BA%A6%E8%AA%BF%E8%AE%8A">wiki pwm</a>
+</p></div>
+
+<div class="footdef"><sup><a id="fn.2" name="fn.2" class="footnum" href="#fnr.2">2</a></sup> <p class="footpara">
+《DIY四轴飞行器——基于MSP430F5系列单片机与Android》
+</p></div>
+
+<div class="footdef"><sup><a id="fn.3" name="fn.3" class="footnum" href="#fnr.3">3</a></sup> <p class="footpara">
+《STC89C51RC-RD数据手册》，普中科技
+</p></div>
+
+<div class="footdef"><sup><a id="fn.4" name="fn.4" class="footnum" href="#fnr.4">4</a></sup> <p class="footpara">
+《STC15单片机实战指南（C语言版）》
+</p></div>
+
+<div class="footdef"><sup><a id="fn.5" name="fn.5" class="footnum" href="#fnr.5">5</a></sup> <p class="footpara">
+普中实验教程
+</p></div>
+
+
+</div>
+</div></div>
+<div id="postamble" class="status">
+<p class="author">Author: 徐文婷</p>
+<p class="date">Created: 2017-04-06 Thu 09:09</p>
+<p class="creator"><a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.2.10)</p>
+<p class="validation"><a href="http://validator.w3.org/check?uri=referer">Validate</a></p>
+</div>
+</body>
+</html>
