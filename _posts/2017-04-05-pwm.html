@@ -245,37 +245,6 @@ PWM波的高电平通过的时候，有打开/激励的作用，而低电平通�
 实验室最开始用的是STC89C52RC，此种单片机没有PWM端口，只能通过定时器软件模拟I/O输出PWM。
 </p>
 
-<p>
-STC89C51RC/RD+ 系列单片机,可设定定时 / 计数器,通过 P1.0 输出时钟。P1.0 除作通用 I/O口外还有两个功能可供选用:用于定时 / 计数器 2 的外部计数输入和定时 / 计数器 2 时钟信号输出。
-</p>
-
-<p>
-公式如下:
-</p>
-
-<div class="center">
-<p>
-
-</p>
-
-<p>
-时钟信号输出频率=fosc/{n*[65536-(RCAP2H,RCAP2L)]}
-</p>
-</div>
-
-<p>
-其中，n = 2 ,6 时钟 / 机器周期;n = 4 ,1 2 时钟 / 机器周期
-</p>
-
-<p>
-从公式可见,在主振频率(fosc)设定后,时钟信号输出频率就取决于定时计数初值的设定。
-</p>
-
-<p>
-在时钟输出模式下,计数器回 0 溢出不会产生中断请求。这种功能相当于定时/计数器2用作波特率发生器,同时又可以作时钟发生器。但必须注意,无论如何波特率发生器和时钟发生器不能单独确定各自不同的频率。原因是两者都用同一个陷阱寄存器 R C A P 2 H 、R C A P 2 L ,不可能出现两个计数初值。
-</p>
-
-
 <div class="figure">
 <p><img src="http://ogw6sutvr.bkt.clouddn.com/Timer%E8%AE%A1%E6%95%B0%E4%B8%8EPWM%E6%B3%A2%E5%BD%A2%E5%85%B3%E7%B3%BB.png" alt="Timer%E8%AE%A1%E6%95%B0%E4%B8%8EPWM%E6%B3%A2%E5%BD%A2%E5%85%B3%E7%B3%BB.png" />
 </p>
@@ -303,11 +272,11 @@ void main(void)
 	Time1Config();
 	while(1)
 	{
-		if(timer1&gt;100)  //PWM周期为100*0.5ms
+		if(timer1=100)  //PWM周期为100*0.5ms
 		{
 			timer1=0;
 		}
-		if(timer1 &lt; 30) //改变30这个值可以改变直流电机的速度,此处30即占空比30%
+		if(timer1 < 30) //改变30这个值可以改变直流电机的速度,此处30即占空比30%
 		{
 			PWM=1;
 		}
@@ -361,7 +330,7 @@ STC15系列的单片机提供了两类形式的PWM产生方法：一类是利用
 <img src="http://ogw6sutvr.bkt.clouddn.com/8%E4%BD%8DPWM%E6%A8%A1%E5%BC%8F%E7%BB%93%E6%9E%84%E5%9B%BE.png" alt="8%E4%BD%8DPWM%E6%A8%A1%E5%BC%8F%E7%BB%93%E6%9E%84%E5%9B%BE.png" /></p>
 
 <p>
-PCA模块n工作于8位PWM模式时，将{0,CL[7:0]}与捕获寄存器{EPCnL,CCAPnL[7:0]}进行比较，如图所示。当{0,CL[7:0]}的值小于{EPCnL,CCAPnL[7:0]}时，输出为低，否则输出为高。当CL的值由FF变为00溢出时，{EPCnH,CCAPnH[7:0]}的内容装载到{EPCnL,CCAPnL[7:0]}中。从而实现无干扰地更新PWM。
+PCA模块n工作于8位PWM模式时，将{0,CL[7:0]}与捕获寄存器{EPCnL,CCAPnL[7:0]}进行比较，如图所示。CL 一开始为0,PCA计数开始后逐渐加1,当{0,CL[7:0]}的值小于{EPCnL,CCAPnL[7:0]}时，输出为低，否则输出为高。当CL的值由FF变为00溢出时，{EPCnH,CCAPnH[7:0]}的内容装载到{EPCnL,CCAPnL[7:0]}中。从而实现无干扰地更新PWM。
 </p>
 
 <table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
@@ -428,6 +397,9 @@ PWM的频率=PCA时钟输入源频率/256
 </p>
 </div>
 
+<p>
+  当CCAP0L=20H时，CL从0到1FH小于CCAP0L输出低电平，否则输出高电平。
+</p>
 <div class="org-src-container">
 
 
@@ -457,10 +429,10 @@ CMOD = 0x02;
 //设置 PCA 时钟源/禁止 PCA 定时器溢出中断
 
 PCA_PWM0 = 0x00;                //PCA 模块 0 工作于 8 位 PWM
-CCAP0H = CCAP0L = 0x20;         //PWM0 的占空比为 87.5%((100H-20H)/100H)
+CCAP0H = CCAP0L = 0x20;         //PWM0 的占空比为 87.5%((100H-20H)/100H),即((2^8-2^5)/2^8)
 CCAPM0 = 0x42;                  //PCA 模块 0 为 8 位 PWM 模式
 PCA_PWM1 = 0x40;                 //PCA 模块 1 工作于 7 位 PWM
-CCAP1H = CCAP1L = 0x20;         //PWM1的占空比为75%((80H-20H)/80H)
+CCAP1H = CCAP1L = 0x20;         //PWM1的占空比为75%((80H-20H)/80H),即((2^7-2^5)/2^7)
 
 {% endhighlight %}
 
