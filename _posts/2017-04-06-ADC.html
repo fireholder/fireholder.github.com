@@ -1,0 +1,757 @@
+---
+title: ADC/DAC 详解
+tags: [单片机]
+---
+
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<title>ADC/DAC 详解</title>
+<!-- 2017-04-07 Fri 17:56 -->
+<meta  http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta  name="generator" content="Org-mode" />
+<meta  name="author" content="徐文婷" />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { color: green; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  pre.src-sh:before    { content: 'sh'; }
+  pre.src-bash:before  { content: 'sh'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-R:before     { content: 'R'; }
+  pre.src-perl:before  { content: 'Perl'; }
+  pre.src-java:before  { content: 'Java'; }
+  pre.src-sql:before   { content: 'SQL'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.right  { text-align: center;  }
+  th.left   { text-align: center;   }
+  th.center { text-align: center; }
+  td.right  { text-align: right;  }
+  td.left   { text-align: left;   }
+  td.center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara:nth-child(2) { display: inline; }
+  .footpara { display: block; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  /*]]>*/-->
+</style>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2013 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="content">
+<h1 class="title">ADC/DAC 详解</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#sec-1">1. 介绍</a>
+<ul>
+<li><a href="#sec-1-1">1.1. DAC</a></li>
+<li><a href="#sec-1-2">1.2. ADC</a></li>
+</ul>
+</li>
+<li><a href="#sec-2">2. 原理</a>
+<ul>
+<li><a href="#sec-2-1">2.1. D/A</a>
+<ul>
+<li><a href="#sec-2-1-1">2.1.1. 种类</a></li>
+<li><a href="#sec-2-1-2">2.1.2. 技术指标</a></li>
+</ul>
+</li>
+<li><a href="#sec-2-2">2.2. A/D</a>
+<ul>
+<li><a href="#sec-2-2-1">2.2.1. 分类</a></li>
+<li><a href="#sec-2-2-2">2.2.2. 过程</a></li>
+<li><a href="#sec-2-2-3">2.2.3. 参数指标</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#sec-3">3. 单片机中的具体应用</a>
+<ul>
+<li><a href="#sec-3-1">3.1. STC</a>
+<ul>
+<li><a href="#sec-3-1-1">3.1.1. 原理</a></li>
+<li><a href="#sec-3-1-2">3.1.2. 代码例程(STC12)</a></li>
+</ul>
+</li>
+<li><a href="#sec-3-2">3.2. STM32</a>
+<ul>
+<li><a href="#sec-3-2-1">3.2.1. 原理</a></li>
+<li><a href="#sec-3-2-2">3.2.2. 代码例程(标准库函数版）</a></li>
+</ul>
+</li>
+<li><a href="#sec-3-3">3.3. MSP430</a>
+<ul>
+<li><a href="#sec-3-3-1">3.3.1. 原理</a></li>
+<li><a href="#sec-3-3-2">3.3.2. 代码例程</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-sec-1" class="outline-2">
+<h2 id="sec-1"><span class="section-number-2">1</span> 介绍</h2>
+<div class="outline-text-2" id="text-1">
+</div><div id="outline-container-sec-1-1" class="outline-3">
+<h3 id="sec-1-1"><span class="section-number-3">1.1</span> DAC<sup><a id="fnr.1" name="fnr.1" class="footref" href="#fn.1">1</a></sup></h3>
+<div class="outline-text-3" id="text-1-1">
+<p>
+Digital-Analog Converter,数模转换器。将数字量转换成模拟量，使输出的模拟量与输入的数字量成正比的电路。简称D/A转换器或DAC。
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-1-2" class="outline-3">
+<h3 id="sec-1-2"><span class="section-number-3">1.2</span> ADC</h3>
+<div class="outline-text-3" id="text-1-2">
+<p>
+Analog-Digital Converter,模数转换器。将模拟量转换为数字量。简称A/D转换器或ADC。
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-2" class="outline-2">
+<h2 id="sec-2"><span class="section-number-2">2</span> 原理</h2>
+<div class="outline-text-2" id="text-2">
+</div><div id="outline-container-sec-2-1" class="outline-3">
+<h3 id="sec-2-1"><span class="section-number-3">2.1</span> D/A</h3>
+<div class="outline-text-3" id="text-2-1">
+<p>
+数字量是用代码按数位组合而成的,对于有权码,每位代码都有一定的权值,如能将每一位代码按其权的大小转换成相应的模拟量,然后,将这些模拟量相加,即可得到与数字量成正比的模拟量,从而实现数字量—模拟量的转换。
+</p>
+
+<p>
+D/A 转换主要由数码寄存器、n 位模拟开关、解码网络、求和电路等组成。
+</p>
+</div>
+
+<div id="outline-container-sec-2-1-1" class="outline-4">
+<h4 id="sec-2-1-1"><span class="section-number-4">2.1.1</span> 种类</h4>
+<div class="outline-text-4" id="text-2-1-1">
+<p>
+D/A 转换器的种类很多,例如:T 型电阻网络、倒 T 型电阻网络、权电流、权电流网络、CMOS 开关型等。
+</p>
+
+
+<div class="figure">
+<p><img src="http://ogw6sutvr.bkt.clouddn.com/%E5%80%92T%E5%9E%8B%E7%BD%91%E7%BB%9C%E5%8E%9F%E7%90%86%E5%9B%BE.png" alt="%E5%80%92T%E5%9E%8B%E7%BD%91%E7%BB%9C%E5%8E%9F%E7%90%86%E5%9B%BE.png" />
+</p>
+<p><span class="figure-number">Figure 1:</span> 倒T型网络原理图</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-2-1-2" class="outline-4">
+<h4 id="sec-2-1-2"><span class="section-number-4">2.1.2</span> 技术指标</h4>
+<div class="outline-text-4" id="text-2-1-2">
+</div><ol class="org-ol"><li><a id="sec-2-1-2-1" name="sec-2-1-2-1"></a>分辨率<br  /><div class="outline-text-5" id="text-2-1-2-1">
+<p>
+分辨率:其定义为 D/A 转换器模拟输出电压可能被分离的等级数。n位 DAC 最多有2个模拟输出电压。位数越多 D/A 转换器的分辨率越高。
+</p>
+
+<p>
+分辨率也可以用能分辨的最小输出电压与最大输出电压之比给出。
+</p>
+</div>
+</li>
+
+<li><a id="sec-2-1-2-2" name="sec-2-1-2-2"></a>转换精度<br  /><div class="outline-text-5" id="text-2-1-2-2">
+<p>
+转换精度是指对给定的数字量,D/A 转换器实际值与理论值之间的最大偏差。
+</p>
+
+<p>
+产生原因:由于 D/A 转换器中各元件参数值存在误差,如基准电压不够稳定或运算放大
+器的零漂等各种因素的影响。
+</p>
+
+<p>
+要求：DAC的精度一定要高于ADC。
+</p>
+</div>
+</li></ol>
+</div>
+</div>
+
+<div id="outline-container-sec-2-2" class="outline-3">
+<h3 id="sec-2-2"><span class="section-number-3">2.2</span> A/D</h3>
+<div class="outline-text-3" id="text-2-2">
+</div><div id="outline-container-sec-2-2-1" class="outline-4">
+<h4 id="sec-2-2-1"><span class="section-number-4">2.2.1</span> 分类</h4>
+<div class="outline-text-4" id="text-2-2-1">
+</div><ol class="org-ol"><li><a id="sec-2-2-1-1" name="sec-2-2-1-1"></a>并联比较型<br  /><div class="outline-text-5" id="text-2-2-1-1">
+<p>
+特点:转换速度快,转换时间 10ns~1us,但电路复杂。
+</p>
+</div>
+</li>
+<li><a id="sec-2-2-1-2" name="sec-2-2-1-2"></a>逐次逼近型<br  /><div class="outline-text-5" id="text-2-2-1-2">
+<p>
+特点:转换速度适中,转换时间为几us到100us,转换精度高,在转换速度和硬件复杂度之间达到一个很好的平衡。
+</p>
+</div>
+</li>
+<li><a id="sec-2-2-1-3" name="sec-2-2-1-3"></a>双积分型<br  /><div class="outline-text-5" id="text-2-2-1-3">
+<p>
+特点:转换速度慢,转换时间几百us到几ms,但抗干扰能力最强。
+</p>
+</div>
+</li></ol>
+</div>
+
+<div id="outline-container-sec-2-2-2" class="outline-4">
+<h4 id="sec-2-2-2"><span class="section-number-4">2.2.2</span> 过程</h4>
+<div class="outline-text-4" id="text-2-2-2">
+<p>
+由于输入的模拟信号在时间上是连续量,所以一般的 A/D 转换过程为:采样、保持、量化和编码。
+</p>
+</div>
+<ol class="org-ol"><li><a id="sec-2-2-2-1" name="sec-2-2-2-1"></a>采样<br  /><div class="outline-text-5" id="text-2-2-2-1">
+<p>
+采样是将随时间连续变化的模拟量转换为在时间上离散的模拟量。
+</p>
+
+<p>
+需遵循采样定理：fs&gt;=2fm
+即采用信号的频率需不小于输入模拟信号的最好频率分量的频率的两倍。
+</p>
+</div>
+</li>
+
+<li><a id="sec-2-2-2-2" name="sec-2-2-2-2"></a>保持<br  /><div class="outline-text-5" id="text-2-2-2-2">
+<p>
+在取样电路后要求将所采样的模拟信号保持一段时间，以为后续的量化编码的过程提供一个稳定的值。
+</p>
+</div>
+</li>
+
+<li><a id="sec-2-2-2-3" name="sec-2-2-2-3"></a>量化和编码<br  /><div class="outline-text-5" id="text-2-2-2-3">
+<p>
+数字信号在数值上是离散的。采样–保持电路的输出电压还需按某种近似方式归化到与
+之相应的离散电平上,任何数字量只能是某个最小数量单位的整数倍。量化又称幅值量化，把采样信号经过舍入或截尾的方法变为只有有限个有效数字的数，这一过程称为量化。若取信号可能出现的最大值为A，另其分为D个间隔，则每个间隔长度为R=A/D，R称为量化增长或量化步长。<sup><a id="fnr.2" name="fnr.2" class="footref" href="#fn.2">2</a></sup>
+</p>
+
+<p>
+量化后的数值最后还需通过编码过程用一个代码表示出来。将离散幅值经量化变为二进制数字的过程中，把采样后的节点变为程序代码可以识别的二进制码，把这些节点以合理的顺序排列出来，实现把一连串的模拟信号用数字信号描述出来的过程即编码。经编码后得到的代码就是A/D 转换器输出的数字量。
+</p>
+
+<p>
+两种近似量化方式:只舍不入量化方式、四舍五入量化方式。为减小误差，后者优于前者。
+</p>
+</div>
+</li></ol>
+</div>
+
+<div id="outline-container-sec-2-2-3" class="outline-4">
+<h4 id="sec-2-2-3"><span class="section-number-4">2.2.3</span> 参数指标</h4>
+<div class="outline-text-4" id="text-2-2-3">
+</div><ol class="org-ol"><li><a id="sec-2-2-3-1" name="sec-2-2-3-1"></a>转换精度<br  /><ol class="org-ol"><li><a id="sec-2-2-3-1-1" name="sec-2-2-3-1-1"></a>分辨率<br  /><div class="outline-text-6" id="text-2-2-3-1-1">
+<p>
+最大输入电压一定时,输出位数越多,量化单位越小,分辨率愈越。
+</p>
+</div>
+</li>
+<li><a id="sec-2-2-3-1-2" name="sec-2-2-3-1-2"></a>转换误差<br  /><div class="outline-text-6" id="text-2-2-3-1-2">
+<p>
+表示 A/D 转换器实际输出的数字量和理论上的输出数字量之间的差别。常用最低有效位的倍数表示
+</p>
+</div>
+</li></ol>
+</li>
+
+<li><a id="sec-2-2-3-2" name="sec-2-2-3-2"></a>转换时间<br  /><div class="outline-text-5" id="text-2-2-3-2">
+<p>
+指从转换控制信号到来开始,到输出端得到稳定的数字信号所经过的时间。
+</p>
+
+<p>
+积分型A/D转换时间是毫秒级，属于低速A/D;逐次比较型是微秒级，属于中速A/D;并行/串行可达到纳秒级，属于高速A/D。
+</p>
+</div>
+</li></ol>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-3" class="outline-2">
+<h2 id="sec-3"><span class="section-number-2">3</span> 单片机中的具体应用</h2>
+<div class="outline-text-2" id="text-3">
+</div><div id="outline-container-sec-3-1" class="outline-3">
+<h3 id="sec-3-1"><span class="section-number-3">3.1</span> STC</h3>
+<div class="outline-text-3" id="text-3-1">
+</div><div id="outline-container-sec-3-1-1" class="outline-4">
+<h4 id="sec-3-1-1"><span class="section-number-4">3.1.1</span> 原理</h4>
+<div class="outline-text-4" id="text-3-1-1">
+<p>
+<img src="http://ogw6sutvr.bkt.clouddn.com/STC15_ADC.png" alt="STC15_ADC.png" />
+</p>
+
+<p>
+这里 10 位的 A/D 转换结果位数由不同的 CLK-DIV.5(PCON2.5)/ADRJ值来决定。
+</p>
+
+<p>
+STC15 系列单片机 ADC 由多路选择开关、比较器、逐次比较寄存器、10 位 DAC、转换结果寄存器(ADC-RES 和 ADC-RESL)以及 ADC-CONTR 构成。
+</p>
+
+<p>
+通过模拟多路开关,将通道 ADC0~7 的模拟量输入并且送给比较器。用数/模转换器(DAC)转换的模拟量与输入的模拟量通过比较器进行比较,将比较结果保存到逐次比较寄存器,并通过逐次比较寄存器输出转换结果。AD 转换结束后,最终的转换结果保存到 ADC 转换结果寄存器 ADC-RES 和 ADC-RESL,同时,置位 ADC 控制寄存器ADC-CONTR 中的 A/D 转换结束标志位 ADC-FLAG,以供程序查询或发出中断申请。其中,模拟通道由 ADC 控制寄存器 ADC-CONTR 中的 CHS2~CHS0 来确定。ADC 的转换速度由 ADC 控制寄存器中的 SPEED1 和 SPEED0 确定。在使用 ADC 之前,应先给 ADC 上电,也就是置位 ADC控制寄存器中的 ADC-POWER 位。
+</p>
+
+<p>
+公式如下：
+</p>
+<ol class="org-ol">
+<li>当 ADRJ=0 时(结果取 10 位),Vin = [(ADC-RES[7:0],ADC-RESL[1:0])/ 1024 ] * Vcc。
+</li>
+
+<li>当 ADRJ=0 时(结果取 8 位),Vin = [(ADC-RES[7:0])/ 256 ] * VCC
+</li>
+</ol>
+<p>
+注意：这个逐次比较是从最高位开始的。
+</p>
+
+<ol class="org-ol">
+<li>当 ADRJ=1 时(结果取 10 位),Vin = [(ADC-RES[1:0],ADC-RESL[7:0])/ 1024 ] * Vcc。
+</li>
+</ol>
+</div>
+
+<ol class="org-ol"><li><a id="sec-3-1-1-1" name="sec-3-1-1-1"></a>相关寄存器<br  /><div class="outline-text-5" id="text-3-1-1-1">
+<ol class="org-ol">
+<li>P1 口模拟功能控制寄存器:P1ASF。分别控制 P1.n 口作为模拟功能 A/D 使用,这里的 n=0~7。STC15 系类单片机的 A/D 转换口在 P1 口(P1.7~P1.0),有 8 路 10 位高速 A/D 转换器,速度可达到 300KHZ(30 万次/秒)。
+</li>
+
+<li>ADC 控制寄存器: ADC<sub>CONTR</sub>
+</li>
+</ol>
+</div>
+</li></ol>
+</div>
+
+<div id="outline-container-sec-3-1-2" class="outline-4">
+<h4 id="sec-3-1-2"><span class="section-number-4">3.1.2</span> 代码例程(STC12)</h4>
+<div class="outline-text-4" id="text-3-1-2">
+<div class="org-src-container">
+
+{% highlight c %}
+BYTE ch=0;                     //定义A/D通道
+void adc_isr interrupt 5 using 1
+{
+  ADC_CONTR &amp;=!ADC_FLAG;
+  SendData(ADC_RES);
+  if(++ch&gt;7)ch=0;
+  ADC_CONTR = ADC_POWER | ADC_SPEEDLL | ADC_START | ch;
+}
+
+void InitADC( )
+{
+
+P1ASF = 0xff;     //Set all P1 as analog input port
+ADC_RES = 0;      //Clear previous result
+ADC_CONTR = ADC_POWER | ADC_SPEEDLL | ADC_START | ch;
+Delay(2);//ADC power-on delay and Start A/D conversion
+}
+{% endhighlight %}
+</div>
+</div>
+</div>
+</div>
+<div id="outline-container-sec-3-2" class="outline-3">
+<h3 id="sec-3-2"><span class="section-number-3">3.2</span> STM32<sup><a id="fnr.3" name="fnr.3" class="footref" href="#fn.3">3</a></sup></h3>
+<div class="outline-text-3" id="text-3-2">
+</div><div id="outline-container-sec-3-2-1" class="outline-4">
+<h4 id="sec-3-2-1"><span class="section-number-4">3.2.1</span> 原理</h4>
+<div class="outline-text-4" id="text-3-2-1">
+<p>
+STM32 拥有 1~3 个 ADC ( STM32F101/102 系列只有 1 个 ADC),这些 ADC 可以独立
+使用,也可以使用双重模式(提高采样率)。 STM32 的 ADC 是 12 位逐次逼近型的模拟数
+字转换器。它有 18 个通道,可测量 16 个外部和 2 个内部信号源。各通道的 A/D 转换可
+以单次、连续、扫描或间断模式执行。 ADC 的结果可以左对齐或右对齐方式存储在 16 位
+数据寄存器中。
+</p>
+
+<p>
+STM32 的 ADC 最大的转换速率为 1Mhz,也就是转换时间为 1us (在 ADCCLK=14M,采样周期
+为 1.5 个 ADC 时钟下得到),不要让 ADC 的时钟超过 14M,否则将导致结果准确度下降。STM32 将 ADC 的转换分为 2 个通道组:规则通道组和注入通道组。规则通道相当于你正常运行的程序,而注入通道呢,就相当于中断。在你程序正常执行的时候,中断是可以打断你的执行的。同这个类似,注入通道的转换可以打断规则通道的转换,在注入通道被转换完成之后,规则通道才得以继续转换。STM32 其 ADC 的规则通道组最多包含 16 个转换,而注入通道组最多包含 4 个通道。
+</p>
+
+<p>
+STM32 的 ADC 在单次转换模式下,只执行一次转换,该模式可以通过 ADC<sub>CR2</sub> 寄存器的 ADON 位(只适用于规则通道)启动,也可以通过外部触发启动(适用于规则通道和注入通道),这是 CONT 位为 0。以规则通道为例,一旦所选择的通道转换完成,转换结果将被存在 ADC<sub>DR</sub> 寄存器中,EOC(转换结束)标志将被置位, 如果设置了 EOCIE,则会产生中断。然后 ADC 将停止,直到下次启动 。
+</p>
+
+<p>
+STM32 的 DAC 模块(数字/模拟转换模块)是 12 位数字输入,电压输出型的 DAC。 DAC可以配置为 8 位或 12 位模式,也可以与 DMA 控制器配合使用。 DAC 工作在 12 位模式时,数据可以设置成左对齐或右对齐。 DAC 模块有 2 个输出通道,每个通道都有单独的转换器。在双 DAC 模式下, 2 个通道可以独立地进行转换,也可以同时进行转换并同步地更新 2 个通道的输出。 DAC 可以通过引脚输入参考电压 VREF+以获得更精确的转换结果。
+</p>
+</div>
+
+<ol class="org-ol"><li><a id="sec-3-2-1-1" name="sec-3-2-1-1"></a>采样周期的设置<br  /><div class="outline-text-5" id="text-3-2-1-1">
+<p>
+一般来说 AD 采样时间是需要时间 的, STM32的 AD 最大转换速率是 1us, 所以这里设置的时候, 不要小于 1us, 否则会导致结果误差大。那么怎么设置呢?比如说,我们设置的采样周期为 1.5 个周期,而我们的 AD频率为 14MHZ。 (这个频率是通过设置分频得到的) 那么我们的转换时间是多少呢?那么 AD 转换一次所需要的总 的周期数为 1.5 + 12.5 = 14。这个 1.5 就是我们设置的采样周期,而这个 12.5 是固定的必须加的,它是基础时间。那么我们就可以很轻易算出,在 14MHZ 的频率下, 14 个周期的时间就是 1us。
+</p>
+
+
+
+<div class="figure">
+<p><img src="http://ogw6sutvr.bkt.clouddn.com/STM32_ADC.png" alt="STM32_ADC.png" />
+</p>
+</div>
+</div>
+</li></ol>
+</div>
+
+<div id="outline-container-sec-3-2-2" class="outline-4">
+<h4 id="sec-3-2-2"><span class="section-number-4">3.2.2</span> 代码例程(标准库函数版）</h4>
+<div class="outline-text-4" id="text-3-2-2">
+</div><ol class="org-ol"><li><a id="sec-3-2-2-1" name="sec-3-2-2-1"></a>A/D<br  /><div class="outline-text-5" id="text-3-2-2-1">
+<div class="org-src-container">
+
+{% highlight c %}
+void adc_init()
+{
+GPIO_InitTypeDef GPIO_InitStructure;
+ADC_InitTypeDef ADC_InitStructure;
+RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA|RCC_APB2Periph_AFIO|RCC_APB2Per
+iph_ADC1,ENABLE);
+RCC_ADCCLKConfig(RCC_PCLK2_Div6);//12M 最大 14M 设置 ADC 时钟(ADCCLK)
+GPIO_InitStructure.GPIO_Pin=GPIO_Pin_1;//ADC
+GPIO_InitStructure.GPIO_Mode=GPIO_Mode_AIN; //模拟输入
+GPIO_InitStructure.GPIO_Speed=GPIO_Speed_50MHz;
+GPIO_Init(GPIOA,&amp;GPIO_InitStructure);
+ADC_InitStructure.ADC_Mode = ADC_Mode_Independent;
+ADC_InitStructure.ADC_ScanConvMode = DISABLE;
+ADC_InitStructure.ADC_ContinuousConvMode = DISABLE;
+ADC_InitStructure.ADC_ExternalTrigConv = ADC_ExternalTrigConv_None;
+ADC_InitStructure.ADC_DataAlign = ADC_DataAlign_Right;
+ADC_InitStructure.ADC_NbrOfChannel = 1;
+ADC_Init(ADC1, &amp;ADC_InitStructure);
+//设置指定 ADC 的规则组通道,设置它们的转化顺序和采样时间
+ADC_RegularChannelConfig(ADC1,ADC_Channel_1,1,ADC_SampleTime_239Cycles5);
+ADC_Cmd(ADC1,ENABLE);
+ADC_ResetCalibration(ADC1);//重置指定的 ADC 的校准寄存器
+while(ADC_GetResetCalibrationStatus(ADC1));//获取 ADC 重置校准寄存器的状态
+ADC_StartCalibration(ADC1);//开始指定 ADC 的校准状态
+while(ADC_GetCalibrationStatus(ADC1));//获取指定 ADC 的校准程序
+ADC_SoftwareStartConvCmd(ADC1, ENABLE);//使能或者失能指定的 ADC 的软件转换启
+动功能
+}
+
+adc_init();
+ADC_SoftwareStartConvCmd(ADC1, ENABLE);
+while(!ADC_GetFlagStatus(ADC1,ADC_FLAG_EOC));//转换结束标志位
+value=value+ADC_GetConversionValue(ADC1);//返回最近一次 ADCx 规则组的转
+换结果
+{% endhighlight %}
+
+</div>
+</div>
+</li>
+
+<li><a id="sec-3-2-2-2" name="sec-3-2-2-2"></a>D/A<br  /><div class="outline-text-5" id="text-3-2-2-2">
+<div class="org-src-container">
+
+{% highlight c %}
+void dac_init()
+//DAC 初始化
+{
+GPIO_InitTypeDef GPIO_InitStructure;
+DAC_InitTypeDef DAC_InitStructure;
+RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA|RCC_APB2Periph_AFIO,ENABLE);
+RCC_APB1PeriphClockCmd(RCC_APB1Periph_DAC,ENABLE);
+GPIO_InitStructure.GPIO_Pin=GPIO_Pin_4;//DAC_1
+GPIO_InitStructure.GPIO_Speed=GPIO_Speed_50MHz;
+GPIO_InitStructure.GPIO_Mode=GPIO_Mode_AIN;//模拟量输入
+GPIO_Init(GPIOA,&amp;GPIO_InitStructure);
+GPIO_SetBits(GPIOA,GPIO_Pin_4);//输出高
+DAC_InitStructure.DAC_Trigger=DAC_Trigger_None;//不使用触发功能
+DAC_InitStructure.DAC_WaveGeneration=DAC_WaveGeneration_None;//不使用三角
+波
+//屏蔽 幅值设置
+DAC_InitStructure.DAC_LFSRUnmask_TriangleAmplitude=DAC_LFSRUnmask_Bit0;
+//关闭缓存
+DAC_InitStructure.DAC_OutputBuffer=DAC_OutputBuffer_Disable;
+DAC_Init(DAC_Channel_1,&amp;DAC_InitStructure);//初始化 DAC 通道 1
+DAC_Cmd(DAC_Channel_1,ENABLE);//使能 DAC1
+DAC_SetChannel1Data(DAC_Align_12b_R,0);//12 位 右对齐 写 0 数据
+}
+{% endhighlight %}
+</div>
+</div>
+</li></ol>
+</div>
+</div>
+
+<div id="outline-container-sec-3-3" class="outline-3">
+<h3 id="sec-3-3"><span class="section-number-3">3.3</span> MSP430</h3>
+<div class="outline-text-3" id="text-3-3">
+</div><div id="outline-container-sec-3-3-1" class="outline-4">
+<h4 id="sec-3-3-1"><span class="section-number-4">3.3.1</span> 原理<sup><a id="fnr.4" name="fnr.4" class="footref" href="#fn.4">4</a></sup></h4>
+<div class="outline-text-4" id="text-3-3-1">
+<p>
+MSP430中有ADC10和ADC12两个模块，ADC12<sub>A</sub> 模块支持快速12位数模转换，具有一个12位的逐次渐进（SAR）内核，转换控制缓冲区允许没有CPU干预的情况下，多达16路独立ADC采样值进行转换和保持。可以模拟多通道，并且有8路外部通道（A0-A7）和4路内部通道。具有高达200ksps的最大转换率。
+</p>
+
+<p>
+ADC 内核将一个模拟输入信号转换为 12 位的数字信号,并将其结果存储在转换存储器中。该内核采用两个可编程/选择的电压(VR+和 VR-)作为转换的上限和下限(即我们说的ADC和DAC的基准信号)。当输入信号大于或等于 VR+时,数字输出(N<sub>ADC</sub> )为最大值(0FFFh),而当输入信号小于者等于 VR-时,输出为 0。在转换控制存储器中定义输入通道和参考电压(VR+和 VR-)。ADC转换结果 Nadc 的计算公式为:
+</p>
+
+<p>
+Nadc = 4095 × (Vin-VR -)⁄(VR +-VR -)
+</p>
+
+<p>
+其中，4095为2<sup>12</sup>-1,12位ADC将VR+和VR-之间分割成2<sup>12</sup> 等份，然后将输入的模拟信号进行转换，输出0～4095的数字。
+</p>
+
+<p>
+ADC12A 内核可通过两个寄存器 ADC12CTL0 和 ADC12CTL1 来进行配置,通过 ADC12ON 位使能内核。在不需要转换时可以关闭 ADC12<sub>A</sub> 以节省功耗。除很少例外,只有当 ADC12ENC = 0 时才能修改ADC12<sub>A</sub> 控制位。在执行转换前 ADC12ENC 必须置 1。
+</p>
+
+<p>
+ADC12A 支持 8 位、10 位及 12 位分辨率模式,可以通过 ADC12RES 位选择。模数转换分别需要 9、11、及 13 个 ADC12CLK 周期。SHI 信号源的极性可以通过 ADC12ISSH 位反转。SAMPCON 信号控制采用周期和启动转换。当 SAMPCON 信号为高时,表示正处在采样过程,SAMPCON 由高到低转换将启动模数转换。ADC12SHP 定义了两种不同的采样时序方法,扩展采样时序和脉冲采样时序。
+</p>
+
+<p>
+ADC12共有12个转换通道，设置了16个转换存储器（ADC12MEMx）用于暂时存储转换结果，合理设置后，ADC12硬件会自动将转换结果保存到相应的存储器里。
+</p>
+</div>
+</div>
+<div id="outline-container-sec-3-3-2" class="outline-4">
+<h4 id="sec-3-3-2"><span class="section-number-4">3.3.2</span> 代码例程<sup><a id="fnr.5" name="fnr.5" class="footref" href="#fn.5">5</a></sup></h4>
+<div class="outline-text-4" id="text-3-3-2">
+<div class="org-src-container">
+
+{% highlight c %}
+//******************************************************************************
+//   MSP430F552x Demo - ADC12, Sample A0, Set P1.0 if A0 &gt; 0.5*AVcc
+//
+//   Description: A single sample is made on A0 with reference to AVcc.
+//   Software sets ADC12SC to start sample and conversion - ADC12SC
+//   automatically cleared at EOC. ADC12 internal oscillator times sample (16x)
+//   and conversion. In Mainloop MSP430 waits in LPM0 to save power until ADC12
+//   conversion complete, ADC12_ISR will force exit from LPM0 in Mainloop on
+//   reti. If A0 &gt; 0.5*AVcc, P1.0 set, else reset.
+//
+//                MSP430F552x
+//             -----------------
+//         /|\|                 |
+//          | |                 |
+//          --|RST              |
+//            |                 |
+//     Vin --&gt;|P6.0/CB0/A0  P1.0|--&gt; LED
+//
+//   Bhargavi Nisarga
+//   Texas Instruments Inc.
+//   April 2009
+//   Built with CCSv4 and IAR Embedded Workbench Version: 4.21
+//******************************************************************************
+
+#include &lt;msp430.h&gt;
+
+int main(void)
+{
+  WDTCTL = WDTPW + WDTHOLD;                 // Stop WDT
+  ADC12CTL0 = ADC12SHT02 + ADC12ON;         // Sampling time, ADC12 on
+  ADC12CTL1 = ADC12SHP;                     // Use sampling timer
+  ADC12IE = 0x01;                           // Enable interrupt
+  ADC12CTL0 |= ADC12ENC;
+  P6SEL |= 0x01;                            // P6.0 ADC option select
+  P1DIR |= 0x01;                            // P1.0 output
+
+  while (1)
+  {
+    ADC12CTL0 |= ADC12SC;                   // Start sampling/conversion
+
+    __bis_SR_register(LPM0_bits + GIE);     // LPM0, ADC12_ISR will force exit
+    __no_operation();                       // For debugger
+  }
+}
+
+#if defined(__TI_COMPILER_VERSION__) || defined(__IAR_SYSTEMS_ICC__)
+#pragma vector = ADC12_VECTOR
+__interrupt void ADC12_ISR(void)
+#elif defined(__GNUC__)
+void __attribute__ ((interrupt(ADC12_VECTOR))) ADC12_ISR (void)
+#else
+#error Compiler not supported!
+#endif
+{
+  switch(__even_in_range(ADC12IV,34))
+  {
+  case  0: break;                           // Vector  0:  No interrupt
+  case  2: break;                           // Vector  2:  ADC overflow
+  case  4: break;                           // Vector  4:  ADC timing overflow
+  case  6:                                  // Vector  6:  ADC12IFG0
+    if (ADC12MEM0 &gt;= 0x7ff)                 // ADC12MEM = A0 &gt; 0.5AVcc?
+      P1OUT |= BIT0;                        // P1.0 = 1
+    else
+      P1OUT &amp;= ~BIT0;                       // P1.0 = 0
+
+    __bic_SR_register_on_exit(LPM0_bits);   // Exit active CPU
+  case  8: break;                           // Vector  8:  ADC12IFG1
+  case 10: break;                           // Vector 10:  ADC12IFG2
+  case 12: break;                           // Vector 12:  ADC12IFG3
+  case 14: break;                           // Vector 14:  ADC12IFG4
+  case 16: break;                           // Vector 16:  ADC12IFG5
+  case 18: break;                           // Vector 18:  ADC12IFG6
+  case 20: break;                           // Vector 20:  ADC12IFG7
+  case 22: break;                           // Vector 22:  ADC12IFG8
+  case 24: break;                           // Vector 24:  ADC12IFG9
+  case 26: break;                           // Vector 26:  ADC12IFG10
+  case 28: break;                           // Vector 28:  ADC12IFG11
+  case 30: break;                           // Vector 30:  ADC12IFG12
+  case 32: break;                           // Vector 32:  ADC12IFG13
+  case 34: break;                           // Vector 34:  ADC12IFG14
+  default: break;
+  }
+}
+{% endhighlight %}
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footnotes">
+<h2 class="footnotes">Footnotes: </h2>
+<div id="text-footnotes">
+
+<div class="footdef"><sup><a id="fn.1" name="fn.1" class="footnum" href="#fnr.1">1</a></sup> <p class="footpara">
+《STC15单片机实战指南》
+</p></div>
+
+<div class="footdef"><sup><a id="fn.2" name="fn.2" class="footnum" href="#fnr.2">2</a></sup> <p class="footpara">
+《51菜鸟到ARM（STM32）高手进阶之路》
+</p></div>
+
+<div class="footdef"><sup><a id="fn.3" name="fn.3" class="footnum" href="#fnr.3">3</a></sup> <p class="footpara">
+普中实验
+</p></div>
+
+<div class="footdef"><sup><a id="fn.4" name="fn.4" class="footnum" href="#fnr.4">4</a></sup> <p class="footpara">
+《MSP430F55xx Users Guide》
+</p></div>
+
+<div class="footdef"><sup><a id="fn.5" name="fn.5" class="footnum" href="#fnr.5">5</a></sup> <p class="footpara">
+TI MSPWare官方例程
+</p></div>
+
+
+</div>
+</div></div>
+<div id="postamble" class="status">
+<p class="author">Author: 徐文婷</p>
+<p class="date">Created: 2017-04-07 Fri 17:56</p>
+<p class="creator"><a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.2.10)</p>
+<p class="validation"><a href="http://validator.w3.org/check?uri=referer">Validate</a></p>
+</div>
+</body>
+</html>
