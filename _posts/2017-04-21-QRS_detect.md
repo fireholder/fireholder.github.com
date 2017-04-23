@@ -63,7 +63,7 @@ slope<sup>2</sup>(n) > slope_thr<sup>2</sup> 时开始检测。
 
 
 
-<center> max<sub>i</sub> = ( first_max<sub>i</sub> ) filter_param + max<sub>i</sub> </center>
+<center> max<sub>i</sub> = ( first_max<sub>i</sub> )/ filter_param + max<sub>i</sub> </center>
 
 
 其中, first_max<sub>i</sub> 为 R 波振幅, max<sub>i</sub> 的初始值为原始心电信号 X <sub>0</sub> 中开始一段信号
