@@ -58,11 +58,11 @@ tags: [算法]
 ## 分析
 
 自由摆运动实际上就是单摆运动，由单摆运动的周期可知：
-<center>**T=2Pi sqrt(L/g)**</center>
+*<center>T=2Pi sqrt(L/g)</center>*
 
 我们用的细杆长度 *L* 为 70.5 cm, 激光笔下端距离地面的高度 *h* 为 19.5 cm, 则万向节距离地面的高度 *H* 为 90 cm。设重力加速度 *g=9.8 m/s<sup>2</sup>* , 则单摆周期：
 
-<center> **T=2Pi sqrt(0.705/9.8) = 1.6852 s**</center>
+*<center> T=2Pi sqrt(0.705/9.8) = 1.6852 s</center>*
 
 频率 *f=1/T=1/1.6852=0.5934 Hz*。可知我们需要设计出一个带宽大于 0.5934Hz 的控制系统。角度采样率根据奈奎斯特采样定理，理论上选取 *fs>2f* 即可，但是题目中要求了系统最大调节时间，为了使得控制效果更好，需要取 *fs>10f* 甚至更高，在本次设计中采样率选取 200Sa/s，控制周期 T<sub>2</sub>=5ms。
 
@@ -86,7 +86,7 @@ tags: [算法]
 
 核心公式为：
 
-**<center>Y=Asin(wt)</center>**
+*<center>Y=Asin(wt)</center>*
 
 
 参考代码如下：
@@ -125,7 +125,8 @@ const float priod = 1685.2;  //单摆周期(毫秒)
 	if(M2.PWM < -POWER_MAX) M2.PWM = -POWER_MAX;		
 
 	MotorMove(M1.PWM,M2.PWM);
-	```
+```
+
 
 
 *MoveTimeCnt* 表示时间，因为采样频率为200Hz，每5ms进入一次中断，所以每次进入中断时	*MoveTimeCnt+=5* , 由 *w=2Pi/T* ,可知 *wt=2×3.14159/T×t*, *t* 为时间积分，即 *MoveTimeCnt* 。
