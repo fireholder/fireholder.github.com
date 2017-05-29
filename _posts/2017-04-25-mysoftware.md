@@ -45,6 +45,7 @@ tags: [软件]
 - [图片编辑](#图片编辑)
 	- [Linux](#linux)
 	- [Windows](#windows)
+- [Hack](#Hack)
 
 <!-- /TOC -->
 
@@ -177,10 +178,12 @@ python的一个UI框架，可以写跨平台app，试过，太麻烦。
 * gerbv : 查看gerber文件      
 * ngspice : 电路仿真，需要用命令行...  
 
+
 ## Windows  
 
 * Protel (Altium Design): 国内最常用
 * Design Spark  :生成 .pcb 文件
+* Tina-TI : TI家的图形界面的电路仿真，Linux下可以用wine
 
 # 科学写作       
 * Latex Studio  ：专业自动排版工具，有自己的语言，很麻烦
@@ -209,5 +212,8 @@ python的一个UI框架，可以写跨平台app，试过，太麻烦。
 
 * PS
 
+# Hack
+
+* 详见我的另一篇博客，kali黑客工具集
 
 > 以上，未完待续...
